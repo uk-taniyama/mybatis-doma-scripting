@@ -26,7 +26,9 @@ public class SqlTemplate {
   private final Config config;
   private final Map<String, Value> values = new HashMap<>();
 
-  /** @param sql a template. Must not be null. */
+  /**
+   * @param sql a template. Must not be null.
+   */
   public SqlTemplate(String sql) {
     this(sql, new StandardDialect());
   }
@@ -66,15 +68,15 @@ public class SqlTemplate {
    * Adds a value.
    *
    * @param name the value name. Must not be null.
-   * @param type the value type. Must not be null.
+   * @param class1 the value type. Must not be null.
    * @param value the value. Can be null.
    * @return this instance. Must not be null.
    * @param <T> the value type
    */
-  public <T> SqlTemplate add(String name, Class<T> type, T value) {
+  public <T> SqlTemplate add(String name, Class<? extends Object> class1, Object value) {
     Objects.requireNonNull(name);
-    Objects.requireNonNull(type);
-    values.put(name, new Value(type, value));
+    Objects.requireNonNull(class1);
+    values.put(name, new Value(class1, value));
     return this;
   }
 

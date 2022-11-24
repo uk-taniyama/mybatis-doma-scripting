@@ -31,5 +31,4 @@ public class TrailingWildCardFormatter {
     }
     return val + "%";
   }
-
 }

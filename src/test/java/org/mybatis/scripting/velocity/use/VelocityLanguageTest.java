@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
@@ -35,16 +34,19 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mybatis.scripting.velocity.VelocityFacade;
 
-/**
- * Just a test case. Not a real Velocity implementation.
- */
+/** Just a test case. Not a real Velocity implementation. */
 class VelocityLanguageTest {
 
   private static SqlSessionFactory sqlSessionFactory;
 
   @SuppressWarnings("unused")
   public enum IDS {
-    ZERO, ONE, TWO, THREE, FOUR, FIVE
+    ZERO,
+    ONE,
+    TWO,
+    THREE,
+    FOUR,
+    FIVE
   }
 
   @BeforeAll
@@ -55,7 +57,8 @@ class VelocityLanguageTest {
       Class.forName("org.hsqldb.jdbcDriver");
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:bname", "sa", "");
 
-      Reader reader = Resources.getResourceAsReader("org/mybatis/scripting/velocity/use/CreateDB.sql");
+      Reader reader =
+          Resources.getResourceAsReader("org/mybatis/scripting/velocity/use/CreateDB.sql");
 
       ScriptRunner runner = new ScriptRunner(conn);
       runner.setLogWriter(null);
@@ -84,7 +87,8 @@ class VelocityLanguageTest {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
 
       Parameter p = new Parameter(true, "Fli%");
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNames", p);
+      List<Name> answer =
+          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNames", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals("Flintstone", n.getLastName());
@@ -103,7 +107,6 @@ class VelocityLanguageTest {
       for (Name n : answer) {
         assertNull(n.getLastName());
       }
-
     }
   }
 
@@ -112,26 +115,28 @@ class VelocityLanguageTest {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
 
       Parameter p = new Parameter(true, "Fli");
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithExpressions", p);
+      List<Name> answer =
+          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithExpressions", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals("Flintstone", n.getLastName());
       }
 
       p = new Parameter(false, "Fli");
-      answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithExpressions", p);
+      answer =
+          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithExpressions", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertNull(n.getLastName());
       }
 
       p = new Parameter(false, "Rub");
-      answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithExpressions", p);
+      answer =
+          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithExpressions", p);
       assertEquals(2, answer.size());
       for (Name n : answer) {
         assertNull(n.getLastName());
       }
-
     }
   }
 
@@ -140,12 +145,13 @@ class VelocityLanguageTest {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
 
       Parameter p = new Parameter(true, "Fli");
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithFormattedParam", p);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithFormattedParam", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals("Flintstone", n.getLastName());
       }
-
     }
   }
 
@@ -153,12 +159,12 @@ class VelocityLanguageTest {
   void testEnumBinding() {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
 
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectEnumBinding");
+      List<Name> answer =
+          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectEnumBinding");
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals("Flintstone", n.getLastName());
       }
-
     }
   }
 
@@ -167,13 +173,13 @@ class VelocityLanguageTest {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
 
       Parameter p = new Parameter(true, "Fli");
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithFormattedParamSafe",
-          p);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithFormattedParamSafe", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals("Flintstone", n.getLastName());
       }
-
     }
   }
 
@@ -181,15 +187,16 @@ class VelocityLanguageTest {
   void testDynamicSelectWithIteration() {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
 
-      int[] ids = { 2, 4, 5 };
+      int[] ids = {2, 4, 5};
       Map<String, int[]> param = new HashMap<>();
       param.put("ids", ids);
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithIteration", param);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithIteration", param);
       assertEquals(3, answer.size());
       for (int i = 0; i < ids.length; i++) {
         assertEquals(ids[i], answer.get(i).getId());
       }
-
     }
   }
 
@@ -200,9 +207,10 @@ class VelocityLanguageTest {
       int[] ids = {};
       Map<String, int[]> param = new HashMap<>();
       param.put("ids", ids);
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithIteration", param);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithIteration", param);
       assertEquals(5, answer.size());
-
     }
   }
 
@@ -213,9 +221,9 @@ class VelocityLanguageTest {
       int[] ids = {};
       Map<String, int[]> param = new HashMap<>();
       param.put("ids", ids);
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectWithTrim", param);
+      List<Name> answer =
+          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectWithTrim", param);
       assertEquals(5, answer.size());
-
     }
   }
 
@@ -229,13 +237,13 @@ class VelocityLanguageTest {
       ids.put(5, "Betty");
       Map<String, Map<Integer, String>> param = new HashMap<>();
       param.put("ids", ids);
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithIterationOverMap",
-          param);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithIterationOverMap", param);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals(ids.get(n.getId()), n.getFirstName());
       }
-
     }
   }
 
@@ -243,16 +251,16 @@ class VelocityLanguageTest {
   void testDynamicSelectWithIterationComplex() {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
 
-      Name[] names = { new Name(2), new Name(4), new Name(5) };
+      Name[] names = {new Name(2), new Name(4), new Name(5)};
       Map<String, Name[]> param = new HashMap<>();
       param.put("names", names);
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithIterationComplex",
-          param);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithIterationComplex", param);
       assertEquals(3, answer.size());
       for (int i = 0; i < names.length; i++) {
         assertEquals(names[i].getId(), answer.get(i).getId());
       }
-
     }
   }
 
@@ -267,8 +275,9 @@ class VelocityLanguageTest {
 
       Map<String, List<Name>> param = new HashMap<>();
       param.put("names", names);
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithIterationComplex",
-          param);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithIterationComplex", param);
       assertEquals(5, answer.size());
     }
   }
@@ -282,7 +291,6 @@ class VelocityLanguageTest {
       fred.setLastName("Flinstone");
       sqlSession.insert("org.mybatis.scripting.velocity.use.insertName", fred);
       assertTrue(fred.getId() != 0);
-
     }
   }
 
@@ -290,8 +298,9 @@ class VelocityLanguageTest {
   void testSelectWithCustomUserDirective() {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       Map<String, List<Name>> param = new HashMap<>();
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectWithCustomUserDirective",
-          param);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectWithCustomUserDirective", param);
       assertEquals(5, answer.size());
     }
   }
@@ -306,7 +315,9 @@ class VelocityLanguageTest {
 
       Map<String, List<Name>> param = new HashMap<>();
       param.put("names", names);
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
       assertEquals(5, answer.size());
     }
   }
@@ -321,7 +332,9 @@ class VelocityLanguageTest {
 
       Map<String, List<Name>> param = new HashMap<>();
       param.put("names", names);
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
       assertEquals(5, answer.size());
     }
   }
@@ -336,7 +349,9 @@ class VelocityLanguageTest {
 
       Map<String, List<Name>> param = new HashMap<>();
       param.put("names", names);
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
       assertEquals(5, answer.size());
     }
   }
@@ -351,21 +366,20 @@ class VelocityLanguageTest {
 
       Map<String, List<Name>> param = new HashMap<>();
       param.put("names", names);
-      List<Name> answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
+      List<Name> answer =
+          sqlSession.selectList(
+              "org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
       assertEquals(1, answer.size());
     }
   }
 
   @Test
   void testAdditionalContextAttributes() {
-    Object template = VelocityFacade.compile("SELECT * FROM users WHERE id = ${id}", "test");
+    Object template = VelocityFacade.compile("SELECT * FROM users WHERE id = /* id */1", "test");
     Map<String, Object> context = new HashMap<>();
     context.put("id", 123);
     String sql = VelocityFacade.apply(template, context);
-    assertEquals(3, context.size());
-    assertEquals(TrailingWildCardFormatter.class, context.get("trailingWildCardFormatter").getClass());
-    assertEquals(EnumBinder.class, context.get("enumBinder").getClass());
+    assertEquals(1, context.size());
     assertEquals("SELECT * FROM users WHERE id = 123", sql);
   }
-
 }

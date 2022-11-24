@@ -19,5 +19,4 @@ package org.mybatis.scripting.velocity;
  * @deprecated Since 2.1.0, recommend to use the {@link VelocityLanguageDriver}.
  */
 @Deprecated
-public class Driver extends VelocityLanguageDriver {
-}
+public class Driver extends VelocityLanguageDriver {}

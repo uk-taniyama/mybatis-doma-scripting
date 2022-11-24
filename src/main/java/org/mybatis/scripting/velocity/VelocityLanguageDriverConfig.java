@@ -29,11 +29,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.StringJoiner;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
-
 import org.apache.commons.text.WordUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.logging.Log;
@@ -43,16 +41,11 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
 import org.apache.ibatis.reflection.property.PropertyTokenizer;
 import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
-import org.apache.ibatis.scripting.ScriptingException;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.RuntimeInstance;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 /**
  * Configuration class for {@link Driver}.
  *
  * @author Kazuki Shimizu
- *
  * @since 2.1.0
  */
 public class VelocityLanguageDriverConfig {
@@ -60,39 +53,24 @@ public class VelocityLanguageDriverConfig {
   private static final String PROPERTY_KEY_CONFIG_FILE = "mybatis-velocity.config.file";
   private static final String PROPERTY_KEY_CONFIG_ENCODING = "mybatis-velocity.config.encoding";
   private static final String DEFAULT_PROPERTIES_FILE = "mybatis-velocity.properties";
-  private static final String PROPERTY_KEY_ADDITIONAL_CONTEXT_ATTRIBUTE = "additional.context.attributes";
-  private static final String[] BUILT_IN_DIRECTIVES = { TrimDirective.class.getName(), WhereDirective.class.getName(),
-      SetDirective.class.getName(), InDirective.class.getName(), RepeatDirective.class.getName() };
-
   private static final Map<Class<?>, Function<String, Object>> TYPE_CONVERTERS;
+
   static {
     Map<Class<?>, Function<String, Object>> converters = new HashMap<>();
     converters.put(String.class, String::trim);
     converters.put(Charset.class, v -> Charset.forName(v.trim()));
-    converters.put(String[].class, v -> Stream.of(v.split(",")).map(String::trim).toArray(String[]::new));
+    converters.put(
+        String[].class, v -> Stream.of(v.split(",")).map(String::trim).toArray(String[]::new));
     converters.put(Object.class, v -> v);
     TYPE_CONVERTERS = Collections.unmodifiableMap(converters);
   }
 
   private static final Log log = LogFactory.getLog(VelocityLanguageDriverConfig.class);
 
-  /**
-   * The Velocity settings.
-   */
+  /** The Velocity settings. */
   private final Map<String, String> velocitySettings = new HashMap<>();
-  {
-    velocitySettings.put(RuntimeConstants.RESOURCE_LOADERS, "class");
-    velocitySettings.put(RuntimeConstants.RESOURCE_LOADER + ".class.class", ClasspathResourceLoader.class.getName());
-  }
 
-  /**
-   * The base directory for reading template resources.
-   */
-  private String[] userDirectives = {};
-
-  /**
-   * The additional context attribute.
-   */
+  /** The additional context attribute. */
   private final Map<String, String> additionalContextAttributes = new HashMap<>();
 
   /**
@@ -105,37 +83,6 @@ public class VelocityLanguageDriverConfig {
   }
 
   /**
-   * Get user define directives.
-   *
-   * @return user define directives.
-   *
-   * @deprecated Recommend to use the 'velocity-settings.runtime.custom_directives' or 'runtime.custom_directives'
-   *             because this method defined for keeping backward compatibility (There is possibility that this method
-   *             removed at a future version)
-   */
-  @Deprecated
-  public String[] getUserdirective() {
-    return userDirectives;
-  }
-
-  /**
-   * Set user define directives.
-   *
-   * @param userDirectives
-   *          user define directives
-   *
-   * @deprecated Recommend to use the 'velocity-settings.runtime.custom_directives' or 'runtime.custom_directives'
-   *             because this method defined for keeping backward compatibility (There is possibility that this method
-   *             removed at a future version)
-   */
-  @Deprecated
-  public void setUserdirective(String... userDirectives) {
-    log.warn(
-        "The 'userdirective' has been deprecated since 2.1.0. Please use the 'velocity-settings.runtime.custom_directives' or 'runtime.custom_directives'.");
-    this.userDirectives = userDirectives;
-  }
-
-  /**
    * Get additional context attributes.
    *
    * @return additional context attributes
@@ -145,25 +92,13 @@ public class VelocityLanguageDriverConfig {
   }
 
   /**
-   * Generate a custom directives string.
-   *
-   * @return a custom directives string
-   */
-  public String generateCustomDirectivesString() {
-    StringJoiner customDirectivesJoiner = new StringJoiner(",");
-    Optional.ofNullable(velocitySettings.get(RuntimeConstants.CUSTOM_DIRECTIVES))
-        .ifPresent(customDirectivesJoiner::add);
-    Stream.of(userDirectives).forEach(customDirectivesJoiner::add);
-    Stream.of(BUILT_IN_DIRECTIVES).forEach(customDirectivesJoiner::add);
-    return customDirectivesJoiner.toString();
-  }
-
-  /**
    * Create an instance from default properties file. <br>
-   * If you want to customize a default {@link RuntimeInstance}, you can configure some property using
-   * mybatis-velocity.properties that encoded by UTF-8. Also, you can change the properties file that will read using
-   * system property (-Dmybatis-velocity.config.file=... -Dmybatis-velocity.config.encoding=...). <br>
+   * If you want to customize a default {@link RuntimeInstance}, you can configure some property
+   * using mybatis-velocity.properties that encoded by UTF-8. Also, you can change the properties
+   * file that will read using system property (-Dmybatis-velocity.config.file=...
+   * -Dmybatis-velocity.config.encoding=...). <br>
    * Supported properties are as follows:
+   *
    * <table border="1">
    * <caption>Supported properties</caption>
    * <tr>
@@ -219,11 +154,8 @@ public class VelocityLanguageDriverConfig {
   /**
    * Create an instance from specified properties.
    *
-   * @param customProperties
-   *          custom configuration properties
-   *
+   * @param customProperties custom configuration properties
    * @return a configuration instance
-   *
    * @see #newInstance()
    */
   public static VelocityLanguageDriverConfig newInstance(Properties customProperties) {
@@ -238,14 +170,12 @@ public class VelocityLanguageDriverConfig {
   /**
    * Create an instance using specified customizer and override using a default properties file.
    *
-   * @param customizer
-   *          baseline customizer
-   *
+   * @param customizer baseline customizer
    * @return a configuration instance
-   *
    * @see #newInstance()
    */
-  public static VelocityLanguageDriverConfig newInstance(Consumer<VelocityLanguageDriverConfig> customizer) {
+  public static VelocityLanguageDriverConfig newInstance(
+      Consumer<VelocityLanguageDriverConfig> customizer) {
     VelocityLanguageDriverConfig config = new VelocityLanguageDriverConfig();
     Properties properties = loadDefaultProperties();
     customizer.accept(config);
@@ -255,51 +185,45 @@ public class VelocityLanguageDriverConfig {
   }
 
   private static void override(VelocityLanguageDriverConfig config, Properties properties) {
-    enableLegacyAdditionalContextAttributes(properties);
-    MetaObject metaObject = MetaObject.forObject(config, new DefaultObjectFactory(), new DefaultObjectWrapperFactory(),
-        new DefaultReflectorFactory());
+    MetaObject metaObject =
+        MetaObject.forObject(
+            config,
+            new DefaultObjectFactory(),
+            new DefaultObjectWrapperFactory(),
+            new DefaultReflectorFactory());
     Set<Object> consumedKeys = new HashSet<>();
-    properties.forEach((key, value) -> {
-      String propertyPath = WordUtils
-          .uncapitalize(WordUtils.capitalize(Objects.toString(key), '-').replaceAll("-", ""));
-      if (metaObject.hasSetter(propertyPath)) {
-        PropertyTokenizer pt = new PropertyTokenizer(propertyPath);
-        if (Map.class.isAssignableFrom(metaObject.getGetterType(pt.getName()))) {
-          @SuppressWarnings("unchecked")
-          Map<String, Object> map = (Map<String, Object>) metaObject.getValue(pt.getName());
-          map.put(pt.getChildren(), value);
-        } else {
-          Optional.ofNullable(value).ifPresent(v -> {
-            Object convertedValue = TYPE_CONVERTERS.get(metaObject.getSetterType(propertyPath)).apply(value.toString());
-            metaObject.setValue(propertyPath, convertedValue);
-          });
-        }
-        consumedKeys.add(key);
-      }
-    });
+    properties.forEach(
+        (key, value) -> {
+          String propertyPath =
+              WordUtils.uncapitalize(
+                  WordUtils.capitalize(Objects.toString(key), '-').replaceAll("-", ""));
+          if (metaObject.hasSetter(propertyPath)) {
+            PropertyTokenizer pt = new PropertyTokenizer(propertyPath);
+            if (Map.class.isAssignableFrom(metaObject.getGetterType(pt.getName()))) {
+              @SuppressWarnings("unchecked")
+              Map<String, Object> map = (Map<String, Object>) metaObject.getValue(pt.getName());
+              map.put(pt.getChildren(), value);
+            } else {
+              Optional.ofNullable(value)
+                  .ifPresent(
+                      v -> {
+                        Object convertedValue =
+                            TYPE_CONVERTERS
+                                .get(metaObject.getSetterType(propertyPath))
+                                .apply(value.toString());
+                        metaObject.setValue(propertyPath, convertedValue);
+                      });
+            }
+            consumedKeys.add(key);
+          }
+        });
     consumedKeys.forEach(properties::remove);
   }
 
-  private static void enableLegacyAdditionalContextAttributes(Properties properties) {
-    String additionalContextAttributes = properties.getProperty(PROPERTY_KEY_ADDITIONAL_CONTEXT_ATTRIBUTE);
-    if (Objects.nonNull(additionalContextAttributes)) {
-      log.warn(String.format(
-          "The '%s' has been deprecated since 2.1.0. Please use the 'additionalContextAttributes.{name}={value}'.",
-          PROPERTY_KEY_ADDITIONAL_CONTEXT_ATTRIBUTE));
-      Stream.of(additionalContextAttributes.split(",")).forEach(pair -> {
-        String[] keyValue = pair.split(":");
-        if (keyValue.length != 2) {
-          throw new ScriptingException("Invalid additional context property '" + pair + "' on '"
-              + PROPERTY_KEY_ADDITIONAL_CONTEXT_ATTRIBUTE + "'. Must be specify by 'key:value' format.");
-        }
-        properties.setProperty("additional-context-attributes." + keyValue[0].trim(), keyValue[1].trim());
-      });
-      properties.remove(PROPERTY_KEY_ADDITIONAL_CONTEXT_ATTRIBUTE);
-    }
-  }
-
-  private static void configureVelocitySettings(VelocityLanguageDriverConfig config, Properties properties) {
-    properties.forEach((name, value) -> config.getVelocitySettings().put((String) name, (String) value));
+  private static void configureVelocitySettings(
+      VelocityLanguageDriverConfig config, Properties properties) {
+    properties.forEach(
+        (name, value) -> config.getVelocitySettings().put((String) name, (String) value));
   }
 
   private static Properties loadDefaultProperties() {
@@ -315,8 +239,10 @@ public class VelocityLanguageDriverConfig {
       in = null;
     }
     if (in != null) {
-      Charset encoding = Optional.ofNullable(System.getProperty(PROPERTY_KEY_CONFIG_ENCODING)).map(Charset::forName)
-          .orElse(StandardCharsets.UTF_8);
+      Charset encoding =
+          Optional.ofNullable(System.getProperty(PROPERTY_KEY_CONFIG_ENCODING))
+              .map(Charset::forName)
+              .orElse(StandardCharsets.UTF_8);
       try (InputStreamReader inReader = new InputStreamReader(in, encoding);
           BufferedReader bufReader = new BufferedReader(inReader)) {
         properties.load(bufReader);
@@ -326,5 +252,4 @@ public class VelocityLanguageDriverConfig {
     }
     return properties;
   }
-
 }

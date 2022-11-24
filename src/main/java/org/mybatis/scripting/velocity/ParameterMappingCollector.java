@@ -18,7 +18,6 @@ package org.mybatis.scripting.velocity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.session.Configuration;
 
@@ -32,7 +31,9 @@ public class ParameterMappingCollector {
   private int uid = 0;
   private String itemKey;
 
-  public ParameterMappingCollector(ParameterMapping[] newParameterMappingSources, Map<String, Object> newContext,
+  public ParameterMappingCollector(
+      ParameterMapping[] newParameterMappingSources,
+      Map<String, Object> newContext,
       Configuration newConfiguration) {
     this.parameterMappingSources = newParameterMappingSources;
     this.context = newContext;
@@ -66,10 +67,15 @@ public class ParameterMappingCollector {
     StringBuilder sb = new StringBuilder().append("_RPTITEM_").append(this.uid++);
     var.root = sb.toString();
     String propertyName = sb.append(var.path).toString();
-    ParameterMapping.Builder builder = new ParameterMapping.Builder(this.configuration, propertyName,
-        source.getJavaType());
-    builder.expression(source.getExpression()).jdbcType(source.getJdbcType()).jdbcTypeName(source.getJdbcTypeName())
-        .mode(source.getMode()).numericScale(source.getNumericScale()).resultMapId(source.getResultMapId())
+    ParameterMapping.Builder builder =
+        new ParameterMapping.Builder(this.configuration, propertyName, source.getJavaType());
+    builder
+        .expression(source.getExpression())
+        .jdbcType(source.getJdbcType())
+        .jdbcTypeName(source.getJdbcTypeName())
+        .mode(source.getMode())
+        .numericScale(source.getNumericScale())
+        .resultMapId(source.getResultMapId())
         .typeHandler(source.getTypeHandler());
     return builder.build();
   }
@@ -98,5 +104,4 @@ public class ParameterMappingCollector {
       // Prevent synthetic access
     }
   }
-
 }

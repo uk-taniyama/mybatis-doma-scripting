@@ -21,8 +21,7 @@ public class Name {
   private String firstName;
   private String lastName;
 
-  public Name() {
-  }
+  public Name() {}
 
   public Name(int value) {
     this.id = value;
@@ -51,5 +50,4 @@ public class Name {
   public void setId(int value) {
     this.id = value;
   }
-
 }

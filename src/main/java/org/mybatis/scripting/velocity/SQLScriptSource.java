@@ -17,7 +17,6 @@ package org.mybatis.scripting.velocity;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlSource;
@@ -36,20 +35,22 @@ public class SQLScriptSource implements SqlSource {
   private final Object compiledScript;
   private final Configuration configuration;
 
-  public SQLScriptSource(Configuration newConfiguration, String script, Class<?> parameterTypeClass) {
+  public SQLScriptSource(
+      Configuration newConfiguration, String script, Class<?> parameterTypeClass) {
     this.configuration = newConfiguration;
-    ParameterMappingSourceParser mappingParser = new ParameterMappingSourceParser(newConfiguration, script,
-        parameterTypeClass);
+    ParameterMappingSourceParser mappingParser =
+        new ParameterMappingSourceParser(newConfiguration, script, parameterTypeClass);
     this.parameterMappingSources = mappingParser.getParameterMappingSources();
-    this.compiledScript = VelocityFacade.compile(mappingParser.getSql(), "velocity-template-" + (++templateIndex));
+    this.compiledScript =
+        VelocityFacade.compile(mappingParser.getSql(), "velocity-template-" + (++templateIndex));
   }
 
   @Override
   public BoundSql getBoundSql(Object parameterObject) {
 
     final Map<String, Object> context = new HashMap<>();
-    final ParameterMappingCollector pmc = new ParameterMappingCollector(this.parameterMappingSources, context,
-        this.configuration);
+    final ParameterMappingCollector pmc =
+        new ParameterMappingCollector(this.parameterMappingSources, context, this.configuration);
 
     context.put(DATABASE_ID_KEY, this.configuration.getDatabaseId());
     context.put(PARAMETER_OBJECT_KEY, parameterObject);
@@ -57,13 +58,12 @@ public class SQLScriptSource implements SqlSource {
     context.put(VARIABLES_KEY, this.configuration.getVariables());
 
     final String sql = VelocityFacade.apply(this.compiledScript, context);
-    BoundSql boundSql = new BoundSql(this.configuration, sql, pmc.getParameterMappings(), parameterObject);
+    BoundSql boundSql =
+        new BoundSql(this.configuration, sql, pmc.getParameterMappings(), parameterObject);
     for (Map.Entry<String, Object> entry : context.entrySet()) {
       boundSql.setAdditionalParameter(entry.getKey(), entry.getValue());
     }
 
     return boundSql;
-
   }
-
 }

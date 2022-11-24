@@ -33,5 +33,4 @@ public class Parameter {
   public String getName() {
     return this.name;
   }
-
 }

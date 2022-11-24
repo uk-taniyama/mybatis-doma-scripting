@@ -31,5 +31,4 @@ public class EnumWrapper extends HashMap<String, Integer> {
       throw new IllegalArgumentException("Supplied argument is not an enum class");
     }
   }
-
 }

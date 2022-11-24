@@ -20,5 +20,4 @@ public class EnumBinder {
   public EnumWrapper bind(String className) throws ClassNotFoundException {
     return new EnumWrapper(Class.forName(className));
   }
-
 }

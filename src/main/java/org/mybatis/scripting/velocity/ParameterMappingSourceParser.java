@@ -18,7 +18,6 @@ package org.mybatis.scripting.velocity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.builder.BaseBuilder;
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.builder.ParameterExpression;
@@ -33,14 +32,17 @@ import org.apache.ibatis.type.JdbcType;
 
 public class ParameterMappingSourceParser {
 
-  private static final String VALID_PROPERTIES = "javaType,jdbcType,mode,numericScale,resultMap,typeHandler,jdbcTypeName";
+  private static final String VALID_PROPERTIES =
+      "javaType,jdbcType,mode,numericScale,resultMap,typeHandler,jdbcTypeName";
 
   private final String sql;
 
   private final ParameterMapping[] parameterMappingSources;
 
-  public ParameterMappingSourceParser(Configuration configuration, String script, Class<?> parameterType) {
-    ParameterMappingTokenHandler handler = new ParameterMappingTokenHandler(configuration, parameterType);
+  public ParameterMappingSourceParser(
+      Configuration configuration, String script, Class<?> parameterType) {
+    ParameterMappingTokenHandler handler =
+        new ParameterMappingTokenHandler(configuration, parameterType);
     GenericTokenParser parser = new GenericTokenParser("@{", "}", handler);
     this.sql = parser.parse(script);
     this.parameterMappingSources = handler.getParameterMappingSources();
@@ -73,8 +75,13 @@ public class ParameterMappingSourceParser {
       int index = this.parameterMappings.size();
       ParameterMapping pm = buildParameterMapping(content);
       this.parameterMappings.add(pm);
-      return new StringBuilder().append('$').append(SQLScriptSource.MAPPING_COLLECTOR_KEY).append(".g(").append(index)
-          .append(")").toString();
+      return new StringBuilder()
+          .append('$')
+          .append(SQLScriptSource.MAPPING_COLLECTOR_KEY)
+          .append(".g(")
+          .append(index)
+          .append(")")
+          .toString();
     }
 
     private ParameterMapping buildParameterMapping(String content) {
@@ -97,7 +104,8 @@ public class ParameterMappingSourceParser {
       } else {
         propertyType = Object.class;
       }
-      ParameterMapping.Builder builder = new ParameterMapping.Builder(this.configuration, property, propertyType);
+      ParameterMapping.Builder builder =
+          new ParameterMapping.Builder(this.configuration, property, propertyType);
       if (jdbcType != null) {
         builder.jdbcType(resolveJdbcType(jdbcType));
       }
@@ -126,8 +134,13 @@ public class ParameterMappingSourceParser {
         } else if ("expression".equals(name)) {
           throw new BuilderException("Expression based parameters are not supported yet");
         } else {
-          throw new BuilderException("An invalid property '" + name + "' was found in mapping @{" + content
-              + "}.  Valid properties are " + VALID_PROPERTIES);
+          throw new BuilderException(
+              "An invalid property '"
+                  + name
+                  + "' was found in mapping @{"
+                  + content
+                  + "}.  Valid properties are "
+                  + VALID_PROPERTIES);
         }
       }
       if (typeHandlerAlias != null) {
@@ -142,11 +155,12 @@ public class ParameterMappingSourceParser {
       } catch (BuilderException ex) {
         throw ex;
       } catch (Exception ex) {
-        throw new BuilderException("Parsing error was found in mapping @{" + content
-            + "}.  Check syntax #{property|(expression), var1=value1, var2=value2, ...} ", ex);
+        throw new BuilderException(
+            "Parsing error was found in mapping @{"
+                + content
+                + "}.  Check syntax #{property|(expression), var1=value1, var2=value2, ...} ",
+            ex);
       }
     }
-
   }
-
 }
