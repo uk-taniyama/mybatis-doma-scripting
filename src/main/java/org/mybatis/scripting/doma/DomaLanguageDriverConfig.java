@@ -21,26 +21,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Stream;
-import org.apache.commons.text.WordUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
-import org.apache.ibatis.reflection.DefaultReflectorFactory;
-import org.apache.ibatis.reflection.MetaObject;
-import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
-import org.apache.ibatis.reflection.property.PropertyTokenizer;
-import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
+import org.seasar.doma.jdbc.dialect.Dialect;
 
 /**
  * Configuration class for {@link Driver}.
@@ -50,53 +37,19 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
  */
 public class DomaLanguageDriverConfig {
 
-  private static final String PROPERTY_KEY_CONFIG_FILE = "mybatis-velocity.config.file";
-  private static final String PROPERTY_KEY_CONFIG_ENCODING = "mybatis-velocity.config.encoding";
-  private static final String DEFAULT_PROPERTIES_FILE = "mybatis-velocity.properties";
-  private static final Map<Class<?>, Function<String, Object>> TYPE_CONVERTERS;
-
-  static {
-    Map<Class<?>, Function<String, Object>> converters = new HashMap<>();
-    converters.put(String.class, String::trim);
-    converters.put(Charset.class, v -> Charset.forName(v.trim()));
-    converters.put(
-        String[].class, v -> Stream.of(v.split(",")).map(String::trim).toArray(String[]::new));
-    converters.put(Object.class, v -> v);
-    TYPE_CONVERTERS = Collections.unmodifiableMap(converters);
-  }
+  private static final String PROPERTY_KEY_CONFIG_FILE = "mybatis-doma.config.file";
+  private static final String DEFAULT_PROPERTIES_FILE = "mybatis-doma.properties";
 
   private static final Log log = LogFactory.getLog(DomaLanguageDriverConfig.class);
 
-  /** The Velocity settings. */
-  private final Map<String, String> velocitySettings = new HashMap<>();
-
-  /** The additional context attribute. */
-  private final Map<String, String> additionalContextAttributes = new HashMap<>();
-
-  /**
-   * Get Velocity settings.
-   *
-   * @return Velocity settings
-   */
-  public Map<String, String> getVelocitySettings() {
-    return velocitySettings;
-  }
-
-  /**
-   * Get additional context attributes.
-   *
-   * @return additional context attributes
-   */
-  public Map<String, String> getAdditionalContextAttributes() {
-    return additionalContextAttributes;
-  }
+  Dialect dialect = null;
 
   /**
    * Create an instance from default properties file. <br>
    * If you want to customize a default {@link RuntimeInstance}, you can configure some property
-   * using mybatis-velocity.properties that encoded by UTF-8. Also, you can change the properties
-   * file that will read using system property (-Dmybatis-velocity.config.file=...
-   * -Dmybatis-velocity.config.encoding=...). <br>
+   * using mybatis-doma.properties that encoded by UTF-8. Also, you can change the properties file
+   * that will read using system property (-Dmybatis-doma.config.file=...
+   * -Dmybatis-doma.config.encoding=...). <br>
    * Supported properties are as follows:
    *
    * <table border="1">
@@ -111,7 +64,8 @@ public class DomaLanguageDriverConfig {
    * </tr>
    * <tr>
    * <td>userdirective</td>
-   * <td>The user defined directives (Recommend to use the 'velocity-settings.runtime.custom_directives' property
+   * <td>The user defined directives (Recommend to use the
+   * 'doma-settings.runtime.custom_directives' property
    * because this property defined for keeping backward compatibility)</td>
    * <td>None(empty)</td>
    * </tr>
@@ -121,7 +75,8 @@ public class DomaLanguageDriverConfig {
    * <tr>
    * <td>additional.context.attributes</td>
    * <td>The user defined additional context attribute values(Recommend to use the
-   * 'additional-context-attributes.{name}' because this property defined for keeping backward compatibility)</td>
+   * 'additional-context-attributes.{name}' because this property defined for
+   * keeping backward compatibility)</td>
    * <td>None(empty)</td>
    * </tr>
    * <tr>
@@ -133,14 +88,17 @@ public class DomaLanguageDriverConfig {
    * <th colspan="3">Velocity settings configuration</th>
    * </tr>
    * <tr>
-   * <td>velocity-settings.{name}</td>
-   * <td>The settings of Velocity's {@link RuntimeInstance#setProperty(String, Object)}</td>
+   * <td>doma-settings.{name}</td>
+   * <td>The settings of Velocity's
+   * {@link RuntimeInstance#setProperty(String, Object)}</td>
    * <td>-</td>
    * </tr>
    * <tr>
    * <td>{name}</td>
-   * <td>The settings of Velocity's {@link RuntimeInstance#setProperty(String, Object)} (Recommend to use the
-   * 'velocity-settings.{name}' because this property defined for keeping backward compatibility)</td>
+   * <td>The settings of Velocity's
+   * {@link RuntimeInstance#setProperty(String, Object)} (Recommend to use the
+   * 'doma-settings.{name}' because this property defined for keeping backward
+   * compatibility)</td>
    * <td>-</td>
    * </tr>
    * </table>
@@ -162,8 +120,7 @@ public class DomaLanguageDriverConfig {
     DomaLanguageDriverConfig config = new DomaLanguageDriverConfig();
     Properties properties = loadDefaultProperties();
     Optional.ofNullable(customProperties).ifPresent(properties::putAll);
-    override(config, properties);
-    configureVelocitySettings(config, properties);
+    configure(config, properties);
     return config;
   }
 
@@ -179,51 +136,41 @@ public class DomaLanguageDriverConfig {
     DomaLanguageDriverConfig config = new DomaLanguageDriverConfig();
     Properties properties = loadDefaultProperties();
     customizer.accept(config);
-    override(config, properties);
-    configureVelocitySettings(config, properties);
+    configure(config, properties);
     return config;
   }
 
-  private static void override(DomaLanguageDriverConfig config, Properties properties) {
-    MetaObject metaObject =
-        MetaObject.forObject(
-            config,
-            new DefaultObjectFactory(),
-            new DefaultObjectWrapperFactory(),
-            new DefaultReflectorFactory());
-    Set<Object> consumedKeys = new HashSet<>();
-    properties.forEach(
-        (key, value) -> {
-          String propertyPath =
-              WordUtils.uncapitalize(
-                  WordUtils.capitalize(Objects.toString(key), '-').replaceAll("-", ""));
-          if (metaObject.hasSetter(propertyPath)) {
-            PropertyTokenizer pt = new PropertyTokenizer(propertyPath);
-            if (Map.class.isAssignableFrom(metaObject.getGetterType(pt.getName()))) {
-              @SuppressWarnings("unchecked")
-              Map<String, Object> map = (Map<String, Object>) metaObject.getValue(pt.getName());
-              map.put(pt.getChildren(), value);
-            } else {
-              Optional.ofNullable(value)
-                  .ifPresent(
-                      v -> {
-                        Object convertedValue =
-                            TYPE_CONVERTERS
-                                .get(metaObject.getSetterType(propertyPath))
-                                .apply(value.toString());
-                        metaObject.setValue(propertyPath, convertedValue);
-                      });
-            }
-            consumedKeys.add(key);
-          }
-        });
-    consumedKeys.forEach(properties::remove);
+  public void setDialect(Dialect dialect) {
+    this.dialect = dialect;
   }
 
-  private static void configureVelocitySettings(
-      DomaLanguageDriverConfig config, Properties properties) {
+  public void setDialect(String dialect) {
+    try {
+      String className = dialect;
+      log.debug("setDialect:" + dialect);
+      if (className.indexOf('.') < 0) {
+        className = "org.seasar.doma.jdbc.dialect." + dialect;
+        if (!dialect.endsWith("Dialect")) {
+          className += "Dialect";
+        }
+      }
+      Class<?> dialectClass = Class.forName(className);
+      if (!Dialect.class.isAssignableFrom(dialectClass)) {
+        throw new Exception();
+      }
+      this.dialect = (Dialect) dialectClass.getDeclaredConstructor().newInstance();
+    } catch (Exception e) {
+      throw new IllegalStateException("Invalid dialect:" + dialect, e);
+    }
+  }
+
+  private static void configure(DomaLanguageDriverConfig config, Properties properties) {
     properties.forEach(
-        (name, value) -> config.getVelocitySettings().put((String) name, (String) value));
+        (name, value) -> {
+          if (name.equals("dialect")) {
+            config.setDialect(value.toString());
+          }
+        });
   }
 
   private static Properties loadDefaultProperties() {
@@ -239,10 +186,7 @@ public class DomaLanguageDriverConfig {
       in = null;
     }
     if (in != null) {
-      Charset encoding =
-          Optional.ofNullable(System.getProperty(PROPERTY_KEY_CONFIG_ENCODING))
-              .map(Charset::forName)
-              .orElse(StandardCharsets.UTF_8);
+      Charset encoding = StandardCharsets.UTF_8;
       try (InputStreamReader inReader = new InputStreamReader(in, encoding);
           BufferedReader bufReader = new BufferedReader(inReader)) {
         properties.load(bufReader);

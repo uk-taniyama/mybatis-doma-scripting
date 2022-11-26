@@ -15,27 +15,19 @@
  */
 package org.mybatis.scripting.doma;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collectors;
 import org.apache.ibatis.builder.BuilderException;
-import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.scripting.ScriptingException;
 import org.apache.ibatis.session.Configuration;
 import org.seasar.doma.jdbc.PreparedSql;
+import org.seasar.doma.jdbc.dialect.Dialect;
+import org.seasar.doma.jdbc.dialect.StandardDialect;
 
 public class DomaFacade {
 
-  private static final Map<String, Object> additionalCtxAttributes = new HashMap<>();
   private static final Log log = LogFactory.getLog(DomaFacade.class);
-
-  private DomaFacade() {
-    // Prevent instantiation
-  }
+  private static Dialect dialect = null;
 
   /**
    * Initialize a template engine.
@@ -44,21 +36,11 @@ public class DomaFacade {
    * @since 2.1.0
    */
   public static void initialize(DomaLanguageDriverConfig driverConfig) {
-    Properties properties = new Properties();
-    driverConfig.getVelocitySettings().forEach(properties::setProperty);
-    additionalCtxAttributes.putAll(
-        driverConfig.getAdditionalContextAttributes().entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    v -> {
-                      try {
-                        return Resources.classForName(v.getValue()).getConstructor().newInstance();
-                      } catch (Exception e) {
-                        throw new ScriptingException(
-                            "Cannot load additional context attribute class.", e);
-                      }
-                    })));
+    if (driverConfig.dialect != null) {
+      DomaFacade.dialect = driverConfig.dialect;
+    } else {
+      DomaFacade.dialect = new StandardDialect();
+    }
   }
 
   /**
@@ -67,7 +49,7 @@ public class DomaFacade {
    * @since 2.1.0
    */
   public static void destroy() {
-    additionalCtxAttributes.clear();
+    DomaFacade.dialect = null;
   }
 
   public static Object compile(String script, String name) {
@@ -84,13 +66,12 @@ public class DomaFacade {
       Object template,
       Object parameterObject) {
     String script = (String) template;
-    log.warn("getBoundSql:Source:" + script);
-    DomaSqlTemplate sqlTemplate = new DomaSqlTemplate(script);
+    log.debug("getBoundSql:Source:" + script);
+    DomaSqlTemplate sqlTemplate = new DomaSqlTemplate(script, dialect);
     VariableValues variableValues = new VariableValues(configuration, parameterObject);
     PreparedSql preparedSql = sqlTemplate.execute(variableValues);
     String sql = preparedSql.getFormattedSql();
-    log.warn("getBoundSql:Result:" + preparedSql.getRawSql());
-    // log.warn("getBoundSql:Result:" + sqlStatement.getArguments().forEach(null););
+    log.debug("getBoundSql:Result:" + preparedSql.getRawSql());
     BoundSql boundSql =
         new BoundSql(configuration, sql, pmc.getParameterMappings(), parameterObject);
     return boundSql;

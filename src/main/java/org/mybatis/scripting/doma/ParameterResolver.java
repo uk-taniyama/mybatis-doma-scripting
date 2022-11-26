@@ -37,7 +37,7 @@ public interface ParameterResolver extends Function<String, Object> {
         } else {
           return parameterMetaObject.getValue(key);
         }
-      } catch(ReflectionException e){
+      } catch (ReflectionException e) {
         return null;
       }
     }
