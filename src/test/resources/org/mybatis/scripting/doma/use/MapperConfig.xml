@@ -23,11 +23,11 @@
 <configuration>
 
   <settings>
-    <setting name="defaultScriptingLanguage" value="velocity"/>
+    <setting name="defaultScriptingLanguage" value="doma"/>
   </settings>
 
   <typeAliases>
-    <typeAlias alias="velocity" type="org.mybatis.scripting.velocity.VelocityLanguageDriver"/>
+    <typeAlias alias="doma" type="org.mybatis.scripting.doma.DomaLanguageDriver"/>
   </typeAliases>
 
   <environments default="development">
@@ -44,7 +44,7 @@
   </environments>
 
   <mappers>
-    <mapper resource="org/mybatis/scripting/velocity/use/mapper.xml"/>
+    <mapper resource="org/mybatis/scripting/doma/use/mapper.xml"/>
   </mappers>
 
 </configuration>

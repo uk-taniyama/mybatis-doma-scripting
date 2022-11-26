@@ -80,10 +80,10 @@ class DomaLanguageDriverConfigTest {
     DomaLanguageDriverConfig config = DomaLanguageDriverConfig.newInstance();
     Assertions.assertEquals(2, config.getAdditionalContextAttributes().size());
     Assertions.assertEquals(
-        "org.mybatis.scripting.velocity.use.TrailingWildCardFormatter",
+        "org.mybatis.scripting.doma.use.TrailingWildCardFormatter",
         config.getAdditionalContextAttributes().get("trailingWildCardFormatter"));
     Assertions.assertEquals(
-        "org.mybatis.scripting.velocity.use.EnumBinder",
+        "org.mybatis.scripting.doma.use.EnumBinder",
         config.getAdditionalContextAttributes().get("enumBinder"));
     // Assertions.assertEquals(
     // "attribute1Value",
@@ -111,10 +111,10 @@ class DomaLanguageDriverConfigTest {
     Properties properties = new Properties();
     properties.setProperty(
         "additional-context-attributes.trailingWildCardFormatter",
-        "org.mybatis.scripting.velocity.use.TrailingWildCardFormatter");
+        "org.mybatis.scripting.doma.use.TrailingWildCardFormatter");
     properties.setProperty(
         "additional-context-attributes.enumBinder",
-        "org.mybatis.scripting.velocity.use.EnumBinder");
+        "org.mybatis.scripting.doma.use.EnumBinder");
     properties.setProperty(
         "velocity-settings.resource.default_encoding", StandardCharsets.ISO_8859_1.name());
     properties.setProperty("velocity-settings.resource.manager.cache.default_size", "200");
@@ -126,10 +126,10 @@ class DomaLanguageDriverConfigTest {
     DomaLanguageDriverConfig config = DomaLanguageDriverConfig.newInstance(properties);
     Assertions.assertEquals(2, config.getAdditionalContextAttributes().size());
     Assertions.assertEquals(
-        "org.mybatis.scripting.velocity.use.TrailingWildCardFormatter",
+        "org.mybatis.scripting.doma.use.TrailingWildCardFormatter",
         config.getAdditionalContextAttributes().get("trailingWildCardFormatter"));
     Assertions.assertEquals(
-        "org.mybatis.scripting.velocity.use.EnumBinder",
+        "org.mybatis.scripting.doma.EnumBinder",
         config.getAdditionalContextAttributes().get("enumBinder"));
     // Assertions.assertEquals(
     // "attribute1Value",
@@ -159,10 +159,10 @@ class DomaLanguageDriverConfigTest {
     DomaLanguageDriverConfig config = DomaLanguageDriverConfig.newInstance();
     Assertions.assertEquals(0, config.getAdditionalContextAttributes().size());
     // Assertions.assertEquals(
-    // "org.mybatis.scripting.velocity.use.TrailingWildCardFormatter",
+    // "org.mybatis.scripting.doma.use.TrailingWildCardFormatter",
     // config.getAdditionalContextAttributes().get("trailingWildCardFormatter"));
     // Assertions.assertEquals(
-    // "org.mybatis.scripting.velocity.use.EnumBinder",
+    // "org.mybatis.scripting.doma.use.EnumBinder",
     // config.getAdditionalContextAttributes().get("enumBinder"));
     Assertions.assertEquals(4, config.getVelocitySettings().size());
     System.out.println(config.getVelocitySettings());

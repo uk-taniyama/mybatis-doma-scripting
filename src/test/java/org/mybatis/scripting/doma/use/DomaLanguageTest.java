@@ -34,7 +34,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mybatis.scripting.doma.DomaFacade;
 
-/** Just a test case. Not a real Velocity implementation. */
+/** Just a test case. Not a real Doma implementation. */
 class DomaLanguageTest {
 
   private static SqlSessionFactory sqlSessionFactory;
@@ -58,7 +58,7 @@ class DomaLanguageTest {
       conn = DriverManager.getConnection("jdbc:hsqldb:mem:bname", "sa", "");
 
       Reader reader =
-          Resources.getResourceAsReader("org/mybatis/scripting/velocity/use/CreateDB.sql");
+          Resources.getResourceAsReader("org/mybatis/scripting/doma/use/CreateDB.sql");
 
       ScriptRunner runner = new ScriptRunner(conn);
       runner.setLogWriter(null);
@@ -67,7 +67,7 @@ class DomaLanguageTest {
       conn.commit();
       reader.close();
 
-      reader = Resources.getResourceAsReader("org/mybatis/scripting/velocity/use/MapperConfig.xml");
+      reader = Resources.getResourceAsReader("org/mybatis/scripting/doma/use/MapperConfig.xml");
       sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
       reader.close();
     } finally {
@@ -88,21 +88,21 @@ class DomaLanguageTest {
 
       Parameter p = new Parameter(true, "Fli%");
       List<Name> answer =
-          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNames", p);
+          sqlSession.selectList("org.mybatis.scripting.doma.use.selectNames", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals("Flintstone", n.getLastName());
       }
 
       p = new Parameter(false, "Fli%");
-      answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNames", p);
+      answer = sqlSession.selectList("org.mybatis.scripting.doma.use.selectNames", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertNull(n.getLastName());
       }
 
       p = new Parameter(false, "Rub%");
-      answer = sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNames", p);
+      answer = sqlSession.selectList("org.mybatis.scripting.doma.use.selectNames", p);
       assertEquals(2, answer.size());
       for (Name n : answer) {
         assertNull(n.getLastName());
@@ -116,7 +116,7 @@ class DomaLanguageTest {
 
       Parameter p = new Parameter(true, "Fli");
       List<Name> answer =
-          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithExpressions", p);
+          sqlSession.selectList("org.mybatis.scripting.doma.use.selectNamesWithExpressions", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals("Flintstone", n.getLastName());
@@ -124,7 +124,7 @@ class DomaLanguageTest {
 
       p = new Parameter(false, "Fli");
       answer =
-          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithExpressions", p);
+          sqlSession.selectList("org.mybatis.scripting.doma.use.selectNamesWithExpressions", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertNull(n.getLastName());
@@ -132,7 +132,7 @@ class DomaLanguageTest {
 
       p = new Parameter(false, "Rub");
       answer =
-          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectNamesWithExpressions", p);
+          sqlSession.selectList("org.mybatis.scripting.doma.use.selectNamesWithExpressions", p);
       assertEquals(2, answer.size());
       for (Name n : answer) {
         assertNull(n.getLastName());
@@ -147,7 +147,7 @@ class DomaLanguageTest {
       Parameter p = new Parameter(true, "Fli");
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithFormattedParam", p);
+              "org.mybatis.scripting.doma.use.selectNamesWithFormattedParam", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals("Flintstone", n.getLastName());
@@ -160,7 +160,7 @@ class DomaLanguageTest {
     try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
 
       List<Name> answer =
-          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectEnumBinding");
+          sqlSession.selectList("org.mybatis.scripting.doma.use.selectEnumBinding");
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals("Flintstone", n.getLastName());
@@ -175,7 +175,7 @@ class DomaLanguageTest {
       Parameter p = new Parameter(true, "Fli");
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithFormattedParamSafe", p);
+              "org.mybatis.scripting.doma.use.selectNamesWithFormattedParamSafe", p);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals("Flintstone", n.getLastName());
@@ -192,7 +192,7 @@ class DomaLanguageTest {
       param.put("ids", ids);
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithIteration", param);
+              "org.mybatis.scripting.doma.use.selectNamesWithIteration", param);
       assertEquals(3, answer.size());
       for (int i = 0; i < ids.length; i++) {
         assertEquals(ids[i], answer.get(i).getId());
@@ -209,7 +209,7 @@ class DomaLanguageTest {
       param.put("ids", ids);
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithIteration", param);
+              "org.mybatis.scripting.doma.use.selectNamesWithIteration", param);
       assertEquals(5, answer.size());
     }
   }
@@ -222,7 +222,7 @@ class DomaLanguageTest {
       Map<String, int[]> param = new HashMap<>();
       param.put("ids", ids);
       List<Name> answer =
-          sqlSession.selectList("org.mybatis.scripting.velocity.use.selectWithTrim", param);
+          sqlSession.selectList("org.mybatis.scripting.doma.use.selectWithTrim", param);
       assertEquals(5, answer.size());
     }
   }
@@ -239,7 +239,7 @@ class DomaLanguageTest {
       param.put("ids", ids);
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithIterationOverMap", param);
+              "org.mybatis.scripting.doma.use.selectNamesWithIterationOverMap", param);
       assertEquals(3, answer.size());
       for (Name n : answer) {
         assertEquals(ids.get(n.getId()), n.getFirstName());
@@ -256,7 +256,7 @@ class DomaLanguageTest {
       param.put("names", names);
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithIterationComplex", param);
+              "org.mybatis.scripting.doma.use.selectNamesWithIterationComplex", param);
       assertEquals(3, answer.size());
       for (int i = 0; i < names.length; i++) {
         assertEquals(names[i].getId(), answer.get(i).getId());
@@ -277,7 +277,7 @@ class DomaLanguageTest {
       param.put("names", names);
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithIterationComplex", param);
+              "org.mybatis.scripting.doma.use.selectNamesWithIterationComplex", param);
       assertEquals(5, answer.size());
     }
   }
@@ -289,7 +289,7 @@ class DomaLanguageTest {
       Name fred = new Name();
       fred.setFirstName("Fred");
       fred.setLastName("Flinstone");
-      sqlSession.insert("org.mybatis.scripting.velocity.use.insertName", fred);
+      sqlSession.insert("org.mybatis.scripting.doma.use.insertName", fred);
       assertTrue(fred.getId() != 0);
     }
   }
@@ -300,7 +300,7 @@ class DomaLanguageTest {
       Map<String, List<Name>> param = new HashMap<>();
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectWithCustomUserDirective", param);
+              "org.mybatis.scripting.doma.use.selectWithCustomUserDirective", param);
       assertEquals(5, answer.size());
     }
   }
@@ -317,7 +317,7 @@ class DomaLanguageTest {
       param.put("names", names);
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
+              "org.mybatis.scripting.doma.use.selectNamesWithInDirective", param);
       assertEquals(5, answer.size());
     }
   }
@@ -334,7 +334,7 @@ class DomaLanguageTest {
       param.put("names", names);
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
+              "org.mybatis.scripting.doma.use.selectNamesWithInDirective", param);
       assertEquals(5, answer.size());
     }
   }
@@ -351,7 +351,7 @@ class DomaLanguageTest {
       param.put("names", names);
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
+              "org.mybatis.scripting.doma.use.selectNamesWithInDirective", param);
       assertEquals(5, answer.size());
     }
   }
@@ -368,17 +368,17 @@ class DomaLanguageTest {
       param.put("names", names);
       List<Name> answer =
           sqlSession.selectList(
-              "org.mybatis.scripting.velocity.use.selectNamesWithInDirective", param);
+              "org.mybatis.scripting.doma.use.selectNamesWithInDirective", param);
       assertEquals(1, answer.size());
     }
   }
 
   // @Test
   // void testAdditionalContextAttributes() {
-  //   Object template = VelocityFacade.compile("SELECT * FROM users WHERE id = /* id */1", "test");
+  //   Object template = DomaFacade.compile("SELECT * FROM users WHERE id = /* id */1", "test");
   //   Map<String, Object> context = new HashMap<>();
   //   context.put("id", 123);
-  //   String sql = VelocityFacade.apply(template, context);
+  //   String sql = DomaFacade.apply(template, context);
   //   assertEquals(1, context.size());
   //   assertEquals("SELECT * FROM users WHERE id = 123", sql);
   // }

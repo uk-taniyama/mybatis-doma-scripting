@@ -20,22 +20,22 @@
           xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
   <properties>
-    <title>MyBatis-Velocity</title>
+    <title>MyBatis-Doma</title>
     <author email="mybatis-dev@googlegroups.com">The MyBatis Team</author>
   </properties>
 
   <body>
     <section name="Introduction">
       <p>
-      mybatis-velocity is an extension that allows you to use the Apache Velocity scripting language
+      mybatis-doma is an extension that allows you to use the Apache Doma scripting language
       to generate your dynamic SQL queries on the fly.
       </p>
       <p>
-        If you are not familiar with apache velocity, you can learn it from its documentation site:
+        If you are not familiar with apache doma, you can learn it from its documentation site:
       </p>
       <ul>
         <li>
-          <a href="https://velocity.apache.org/engine/2.1/vtl-reference.html">Velocity Template Language (VTL) Reference</a>
+          <a href="https://doma.apache.org/engine/2.1/vtl-reference.html">Doma Template Language (VTL) Reference</a>
         </li>
       </ul>
     </section>
@@ -44,7 +44,7 @@
       <ul>
         <li>Java : Java 8+</li>
         <li>MyBatis : 3.5+</li>
-        <li>Velocity : 2.1+</li>
+        <li>Doma : 2.1+</li>
       </ul>
     </section>
 
@@ -55,7 +55,7 @@
       <source><![CDATA[
 <dependency>
     <groupId>org.mybatis.scripting</groupId>
-    <artifactId>mybatis-velocity</artifactId>
+    <artifactId>mybatis-doma</artifactId>
     <version>2.1.0</version>
 </dependency>
 ]]></source>
@@ -64,7 +64,7 @@
 
       <source><![CDATA[
 dependencies {
-    compile("org.mybatis.scripting:mybatis-velocity:2.1.0")
+    compile("org.mybatis.scripting:mybatis-doma:2.1.0")
 }]]></source>
 
     </section>
@@ -72,14 +72,14 @@ dependencies {
     <section name="Configuration">
       <subsection name="Common">
         <p>
-          By default, the <code>mybatis-velocity.properties</code> file create in your classpath.
+          By default, the <code>mybatis-doma.properties</code> file create in your classpath.
         </p>
         <ul>
           <li>
-            You can specify user defined custom directives to use on the Velocity template engine using the Velocity standard property(<code>runtime.custom_directives</code>).
+            You can specify user defined custom directives to use on the Doma template engine using the Doma standard property(<code>runtime.custom_directives</code>).
             For details see the <a href="#User_Defined_Directives">"User Defined Directives"</a>.
             <source><![CDATA[
-velocitySettings.runtime.custom_directives = com.example.directives.MyDirective
+domaSettings.runtime.custom_directives = com.example.directives.MyDirective
 # or
 runtime.custom_directives = com.example.directives.MyDirective
 ]]></source>
@@ -106,24 +106,24 @@ additional.context.attributes = likeEscape:com.example.helpers.LikeEscape,master
 ]]></source>
           </li>
           <li>
-            You can configure the Velocity configuration as follow:
-            About available setting name, please refer to <a href="https://velocity.apache.org/engine/2.1/configuration.html">the reference documentation of Velocity</a>.
+            You can configure the Doma configuration as follow:
+            About available setting name, please refer to <a href="https://doma.apache.org/engine/2.1/configuration.html">the reference documentation of Doma</a>.
             <source><![CDATA[
-# velocitySettings.{name} = {value}
-# 'velocity-settings' (kebab-case) can be used too
-velocitySettings.resource.default_encoding = Windows-31J
+# domaSettings.{name} = {value}
+# 'doma-settings' (kebab-case) can be used too
+domaSettings.resource.default_encoding = Windows-31J
 ]]></source>
 
-            The <code>{name} = {value}</code> format(without prefixed 'velocitySettings') supported for keeping backward compatibility with old versions(2.0 or under).
+            The <code>{name} = {value}</code> format(without prefixed 'domaSettings') supported for keeping backward compatibility with old versions(2.0 or under).
             <source><![CDATA[
-# This setting is same with 'velocitySettings.resource.default_encoding'
+# This setting is same with 'domaSettings.resource.default_encoding'
 resource.default_encoding = Windows-31J
 ]]></source>
           </li>
           <li>
             Since 2.1.0, you can use an any properties file or encoding as follow:
             <source><![CDATA[
-$ java -Dmybatis-velocity.config.file=mybatis-velocity_production.properties -Dmybatis-velocity.config.encoding=Windows-31J ...
+$ java -Dmybatis-doma.config.file=mybatis-doma_production.properties -Dmybatis-doma.config.encoding=Windows-31J ...
 ]]></source>
           </li>
         </ul>
@@ -138,17 +138,17 @@ $ java -Dmybatis-velocity.config.file=mybatis-velocity_production.properties -Dm
 <configuration>
   ...
   <typeAliases>
-    <typeAlias alias="velocity" type="org.mybatis.scripting.velocity.VelocityLanguageDriver"/>
+    <typeAlias alias="doma" type="org.mybatis.scripting.doma.DomaLanguageDriver"/>
   </typeAliases>
   ...
 </configuration>]]></source>
           </li>
-          <li>Set the velocity as your default scripting language:
+          <li>Set the doma as your default scripting language:
             <source><![CDATA[
 <configuration>
   ...
   <settings>
-      <setting name="defaultScriptingLanguage" value="velocity"/>
+      <setting name="defaultScriptingLanguage" value="doma"/>
   </settings>
   ...
 </configuration>]]></source>
@@ -158,10 +158,10 @@ $ java -Dmybatis-velocity.config.file=mybatis-velocity_production.properties -Dm
     </section>
 
     <section name="Usage">
-      <p>Just write your dynamic queries and use velocity:</p>
+      <p>Just write your dynamic queries and use doma:</p>
       <p>Example:
       <source><![CDATA[
-<select id="findPerson" lang="velocity">
+<select id="findPerson" lang="doma">
   #set( $pattern = $_parameter.name + '%' )
   SELECT *
   FROM person
@@ -351,14 +351,14 @@ FROM City
     </section>
     <section name="User Defined Directives">
       <p>
-      mybatis-velocity allows you to write your own velocity directive:
+      mybatis-doma allows you to write your own doma directive:
       </p>
         <ul>
           <li>
-            Create a property file named <code>mybatis-velocity.properties</code> and put in on the classpath.
+            Create a property file named <code>mybatis-doma.properties</code> and put in on the classpath.
           </li>
           <li>
-             Create your own velocity directive.
+             Create your own doma directive.
           </li>
           <li>
              Add the directive to the property file.
@@ -380,7 +380,7 @@ public class MyDirective extends Directive {
 ]]></source>
 
       <source><![CDATA[
-# mybatis-velocity.properties
+# mybatis-doma.properties
 userdirective=com.example.directives.MyDirective,com.example.directives.SpecialDirective
 ]]></source>
 
@@ -397,11 +397,11 @@ FROM City
 
     <section name="Additional Context Attributes">
       <p>
-        The mybatis-velocity allows you to pass any attribute(instantiate using specified FQCN) to the Velocity template engine.
+        The mybatis-doma allows you to pass any attribute(instantiate using specified FQCN) to the Doma template engine.
       </p>
       <ul>
         <li>
-          Create a property file named <code>mybatis-velocity.properties</code> and put in on the classpath.
+          Create a property file named <code>mybatis-doma.properties</code> and put in on the classpath.
         </li>
         <li>
           Create any <b>thread safe</b> class.
@@ -410,7 +410,7 @@ FROM City
           Add the class to the property file.
         </li>
         <li>
-          Use object that instantiated by mybatis-velocity in your sql template.
+          Use object that instantiated by mybatis-doma in your sql template.
         </li>
       </ul>
       <p>Example:</p>
@@ -428,7 +428,7 @@ public class LikeEscape {
 ]]></source>
 
       <source><![CDATA[
-# mybatis-velocity.properties
+# mybatis-doma.properties
 additionalContextAttributes.likeEscape = com.example.helpers.LikeEscape
 ]]></source>
 

@@ -20,7 +20,7 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.mybatis.scripting.velocity.use">
+<mapper namespace="org.mybatis.scripting.doma.use">
 
   <sql id="columns">firstName /*%if includeLastName */, lastName /*%end*/</sql>
 
@@ -28,39 +28,39 @@
     'SOME NOISE', <include refid="columns"/>
   </sql>
 
-  <select id="selectNames" resultType="org.mybatis.scripting.velocity.use.Name">
+  <select id="selectNames" resultType="org.mybatis.scripting.doma.use.Name">
     SELECT <include refid="nested" />
     FROM names
     WHERE lastName LIKE /* name */'name'
   </select>
 
-  <select id="selectNamesWithExpressions" resultType="org.mybatis.scripting.velocity.use.Name">
+  <select id="selectNamesWithExpressions" resultType="org.mybatis.scripting.doma.use.Name">
     SELECT <include refid="columns" />
     FROM names
     WHERE lastName LIKE /* name + "%"*/'name%'
   </select>
 
-  <select id="selectNamesWithFormattedParam" resultType="org.mybatis.scripting.velocity.use.Name">
+  <select id="selectNamesWithFormattedParam" resultType="org.mybatis.scripting.doma.use.Name">
     SELECT <include refid="columns" />
     FROM names
     WHERE lastName LIKE $trailingWildCardFormatter.formatLiteral($_parameter.name)
   </select>
 
-  <select id="selectNamesWithFormattedParamSafe" resultType="org.mybatis.scripting.velocity.use.Name">
+  <select id="selectNamesWithFormattedParamSafe" resultType="org.mybatis.scripting.doma.use.Name">
     #set( $pattern = $trailingWildCardFormatter.format($_parameter.name) )
     SELECT <include refid="columns" />
     FROM names
     WHERE lastName LIKE @{pattern, javaType=string}
   </select>
 
-  <select id="selectNamesWithIteration" resultType="org.mybatis.scripting.velocity.use.Name">
+  <select id="selectNamesWithIteration" resultType="org.mybatis.scripting.doma.use.Name">
     SELECT *
     FROM names
     where
       id IN /* ids */(1,2,3)
   </select>
 
-  <select id="selectWithTrim" resultType="org.mybatis.scripting.velocity.use.Name">
+  <select id="selectWithTrim" resultType="org.mybatis.scripting.doma.use.Name">
     SELECT *
     FROM names
       #trim("WHERE" "" "" "FOOFOO")
@@ -68,7 +68,7 @@
       #end
   </select>
 
-  <select id="selectNamesWithIterationOverMap" resultType="org.mybatis.scripting.velocity.use.Name">
+  <select id="selectNamesWithIterationOverMap" resultType="org.mybatis.scripting.doma.use.Name">
     SELECT *
     FROM names
     #where()
@@ -78,7 +78,7 @@
     #end
   </select>
 
-  <select id="selectNamesWithIterationComplex" resultType="org.mybatis.scripting.velocity.use.Name">
+  <select id="selectNamesWithIterationComplex" resultType="org.mybatis.scripting.doma.use.Name">
     SELECT *
     FROM names
     #where()
@@ -88,12 +88,12 @@
     #end
   </select>
 
- <select id="selectWithCustomUserDirective" resultType="org.mybatis.scripting.velocity.use.Name">
+ <select id="selectWithCustomUserDirective" resultType="org.mybatis.scripting.doma.use.Name">
     #genSql()
     #end
   </select>
 
-  <select id="selectNamesWithInDirective" resultType="org.mybatis.scripting.velocity.use.Name">
+  <select id="selectNamesWithInDirective" resultType="org.mybatis.scripting.doma.use.Name">
     SELECT *
     FROM names
        WHERE
@@ -102,7 +102,7 @@
        #end
   </select>
 
-  <insert id="insertName" parameterType="org.mybatis.scripting.velocity.use.Name">
+  <insert id="insertName" parameterType="org.mybatis.scripting.doma.use.Name">
     <selectKey keyProperty="id" resultType="int">
       CALL IDENTITY()
     </selectKey>
@@ -110,8 +110,8 @@
     VALUES (@{firstName}, @{lastName})
   </insert>
 
-  <select id="selectEnumBinding" resultType="org.mybatis.scripting.velocity.use.Name">
-    #set( $ids = $enumBinder.bind('org.mybatis.scripting.velocity.use.VelocityLanguageTest$IDS') )
+  <select id="selectEnumBinding" resultType="org.mybatis.scripting.doma.use.Name">
+    #set( $ids = $enumBinder.bind('org.mybatis.scripting.doma.use.domaLanguageTest$IDS') )
     SELECT *
     FROM names
        WHERE
