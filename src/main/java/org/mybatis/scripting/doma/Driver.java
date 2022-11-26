@@ -13,11 +13,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.scripting.velocity.use;
+package org.mybatis.scripting.doma;
 
-public class EnumBinder {
-
-  public EnumWrapper bind(String className) throws ClassNotFoundException {
-    return new EnumWrapper(Class.forName(className));
-  }
-}
+/**
+ * @deprecated Since 2.1.0, recommend to use the {@link DomaLanguageDriver}.
+ */
+@Deprecated
+public class Driver extends DomaLanguageDriver {}

@@ -1,4 +1,4 @@
-package org.mybatis.scripting.velocity;
+package org.mybatis.scripting.doma;
 
 import org.apache.ibatis.session.Configuration;
 import org.seasar.doma.internal.expr.Value;

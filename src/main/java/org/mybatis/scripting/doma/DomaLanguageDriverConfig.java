@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.scripting.velocity;
+package org.mybatis.scripting.doma;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,7 +48,7 @@ import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
  * @author Kazuki Shimizu
  * @since 2.1.0
  */
-public class VelocityLanguageDriverConfig {
+public class DomaLanguageDriverConfig {
 
   private static final String PROPERTY_KEY_CONFIG_FILE = "mybatis-velocity.config.file";
   private static final String PROPERTY_KEY_CONFIG_ENCODING = "mybatis-velocity.config.encoding";
@@ -65,7 +65,7 @@ public class VelocityLanguageDriverConfig {
     TYPE_CONVERTERS = Collections.unmodifiableMap(converters);
   }
 
-  private static final Log log = LogFactory.getLog(VelocityLanguageDriverConfig.class);
+  private static final Log log = LogFactory.getLog(DomaLanguageDriverConfig.class);
 
   /** The Velocity settings. */
   private final Map<String, String> velocitySettings = new HashMap<>();
@@ -147,7 +147,7 @@ public class VelocityLanguageDriverConfig {
    *
    * @return a configuration instance
    */
-  public static VelocityLanguageDriverConfig newInstance() {
+  public static DomaLanguageDriverConfig newInstance() {
     return newInstance(loadDefaultProperties());
   }
 
@@ -158,8 +158,8 @@ public class VelocityLanguageDriverConfig {
    * @return a configuration instance
    * @see #newInstance()
    */
-  public static VelocityLanguageDriverConfig newInstance(Properties customProperties) {
-    VelocityLanguageDriverConfig config = new VelocityLanguageDriverConfig();
+  public static DomaLanguageDriverConfig newInstance(Properties customProperties) {
+    DomaLanguageDriverConfig config = new DomaLanguageDriverConfig();
     Properties properties = loadDefaultProperties();
     Optional.ofNullable(customProperties).ifPresent(properties::putAll);
     override(config, properties);
@@ -174,9 +174,9 @@ public class VelocityLanguageDriverConfig {
    * @return a configuration instance
    * @see #newInstance()
    */
-  public static VelocityLanguageDriverConfig newInstance(
-      Consumer<VelocityLanguageDriverConfig> customizer) {
-    VelocityLanguageDriverConfig config = new VelocityLanguageDriverConfig();
+  public static DomaLanguageDriverConfig newInstance(
+      Consumer<DomaLanguageDriverConfig> customizer) {
+    DomaLanguageDriverConfig config = new DomaLanguageDriverConfig();
     Properties properties = loadDefaultProperties();
     customizer.accept(config);
     override(config, properties);
@@ -184,7 +184,7 @@ public class VelocityLanguageDriverConfig {
     return config;
   }
 
-  private static void override(VelocityLanguageDriverConfig config, Properties properties) {
+  private static void override(DomaLanguageDriverConfig config, Properties properties) {
     MetaObject metaObject =
         MetaObject.forObject(
             config,
@@ -221,7 +221,7 @@ public class VelocityLanguageDriverConfig {
   }
 
   private static void configureVelocitySettings(
-      VelocityLanguageDriverConfig config, Properties properties) {
+      DomaLanguageDriverConfig config, Properties properties) {
     properties.forEach(
         (name, value) -> config.getVelocitySettings().put((String) name, (String) value));
   }

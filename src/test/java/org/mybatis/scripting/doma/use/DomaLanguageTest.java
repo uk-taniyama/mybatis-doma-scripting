@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.scripting.velocity.use;
+package org.mybatis.scripting.doma.use;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,10 +32,10 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mybatis.scripting.velocity.VelocityFacade;
+import org.mybatis.scripting.doma.DomaFacade;
 
 /** Just a test case. Not a real Velocity implementation. */
-class VelocityLanguageTest {
+class DomaLanguageTest {
 
   private static SqlSessionFactory sqlSessionFactory;
 
@@ -79,7 +79,7 @@ class VelocityLanguageTest {
 
   @AfterAll
   static void cleanup() {
-    VelocityFacade.destroy();
+    DomaFacade.destroy();
   }
 
   @Test

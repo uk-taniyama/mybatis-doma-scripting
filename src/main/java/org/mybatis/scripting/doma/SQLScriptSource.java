@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.scripting.velocity;
+package org.mybatis.scripting.doma;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class SQLScriptSource implements SqlSource {
         new ParameterMappingSourceParser(newConfiguration, script, parameterTypeClass);
     this.parameterMappingSources = mappingParser.getParameterMappingSources();
     this.compiledScript =
-        VelocityFacade.compile(mappingParser.getSql(), "velocity-template-" + (++templateIndex));
+        DomaFacade.compile(mappingParser.getSql(), "velocity-template-" + (++templateIndex));
   }
 
   @Override
@@ -57,8 +57,7 @@ public class SQLScriptSource implements SqlSource {
     // context.put(MAPPING_COLLECTOR_KEY, pmc);
     // context.put(VARIABLES_KEY, this.configuration.getVariables());
 
-    return VelocityFacade.getBoundSql(
-        this.configuration, pmc, this.compiledScript, parameterObject);
+    return DomaFacade.getBoundSql(this.configuration, pmc, this.compiledScript, parameterObject);
     // BoundSql boundSql =
     //     new BoundSql(this.configuration, sql, pmc.getParameterMappings(), parameterObject);
     // for (Map.Entry<String, Object> entry : context.entrySet()) {

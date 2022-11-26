@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.scripting.velocity;
+package org.mybatis.scripting.doma;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class VelocityLanguageDriverConfigTest {
+class DomaLanguageDriverConfigTest {
 
   private String currentConfigFile;
   private String currentConfigEncoding;
@@ -51,7 +51,7 @@ class VelocityLanguageDriverConfigTest {
   @Test
   void newInstanceWithEmptyPropertiesFile() {
     System.setProperty("mybatis-velocity.config.file", "mybatis-velocity-empty.properties");
-    VelocityLanguageDriverConfig config = VelocityLanguageDriverConfig.newInstance();
+    DomaLanguageDriverConfig config = DomaLanguageDriverConfig.newInstance();
     Assertions.assertEquals(0, config.getAdditionalContextAttributes().size());
     Assertions.assertEquals(0, config.getVelocitySettings().size());
     // Assertions.assertEquals("class",
@@ -64,7 +64,7 @@ class VelocityLanguageDriverConfigTest {
   @Test
   void newInstanceWithPropertiesFileNotFound() {
     System.setProperty("mybatis-velocity.config.file", "mybatis-velocity-notfound.properties");
-    VelocityLanguageDriverConfig config = VelocityLanguageDriverConfig.newInstance();
+    DomaLanguageDriverConfig config = DomaLanguageDriverConfig.newInstance();
     Assertions.assertEquals(0, config.getAdditionalContextAttributes().size());
     Assertions.assertEquals(0, config.getVelocitySettings().size());
     // Assertions.assertEquals("class",
@@ -77,7 +77,7 @@ class VelocityLanguageDriverConfigTest {
   @Test
   void newInstanceWithCustomPropertiesFile() {
     System.setProperty("mybatis-velocity.config.file", "mybatis-velocity-custom.properties");
-    VelocityLanguageDriverConfig config = VelocityLanguageDriverConfig.newInstance();
+    DomaLanguageDriverConfig config = DomaLanguageDriverConfig.newInstance();
     Assertions.assertEquals(2, config.getAdditionalContextAttributes().size());
     Assertions.assertEquals(
         "org.mybatis.scripting.velocity.use.TrailingWildCardFormatter",
@@ -123,7 +123,7 @@ class VelocityLanguageDriverConfigTest {
         "attribute1 : attribute1Value , attribute2 : attribute2Value");
     properties.setProperty("directive.foreach.max_loops", "30");
     properties.setProperty("runtime.log.name", "org.apache.velocity");
-    VelocityLanguageDriverConfig config = VelocityLanguageDriverConfig.newInstance(properties);
+    DomaLanguageDriverConfig config = DomaLanguageDriverConfig.newInstance(properties);
     Assertions.assertEquals(2, config.getAdditionalContextAttributes().size());
     Assertions.assertEquals(
         "org.mybatis.scripting.velocity.use.TrailingWildCardFormatter",
@@ -156,7 +156,7 @@ class VelocityLanguageDriverConfigTest {
   @Test
   void newInstanceWithLegacyPropertiesFile() {
     System.setProperty("mybatis-velocity.config.file", "mybatis-velocity-legacy.properties");
-    VelocityLanguageDriverConfig config = VelocityLanguageDriverConfig.newInstance();
+    DomaLanguageDriverConfig config = DomaLanguageDriverConfig.newInstance();
     Assertions.assertEquals(0, config.getAdditionalContextAttributes().size());
     // Assertions.assertEquals(
     // "org.mybatis.scripting.velocity.use.TrailingWildCardFormatter",
@@ -179,8 +179,8 @@ class VelocityLanguageDriverConfigTest {
 
   @Test
   void newInstanceWithConsumer() {
-    VelocityLanguageDriverConfig config =
-        VelocityLanguageDriverConfig.newInstance(
+    DomaLanguageDriverConfig config =
+        DomaLanguageDriverConfig.newInstance(
             c -> c.getVelocitySettings().put("resource.default_encoding", "Windows-31J"));
     Assertions.assertEquals(2, config.getVelocitySettings().size());
     System.out.println(config.getVelocitySettings());
@@ -198,7 +198,7 @@ class VelocityLanguageDriverConfigTest {
       Properties properties = new Properties();
       properties.setProperty("additional.context.attributes", "");
       try {
-        VelocityLanguageDriverConfig.newInstance(properties);
+        DomaLanguageDriverConfig.newInstance(properties);
         Assertions.fail();
       } catch (ScriptingException e) {
         Assertions.assertEquals(
@@ -210,7 +210,7 @@ class VelocityLanguageDriverConfigTest {
       Properties properties = new Properties();
       properties.setProperty("additional.context.attributes", "key");
       try {
-        VelocityLanguageDriverConfig.newInstance(properties);
+        DomaLanguageDriverConfig.newInstance(properties);
         Assertions.fail();
       } catch (ScriptingException e) {
         Assertions.assertEquals(
@@ -222,7 +222,7 @@ class VelocityLanguageDriverConfigTest {
       Properties properties = new Properties();
       properties.setProperty("additional.context.attributes", "key:value:note");
       try {
-        VelocityLanguageDriverConfig.newInstance(properties);
+        DomaLanguageDriverConfig.newInstance(properties);
         Assertions.fail();
       } catch (ScriptingException e) {
         Assertions.assertEquals(

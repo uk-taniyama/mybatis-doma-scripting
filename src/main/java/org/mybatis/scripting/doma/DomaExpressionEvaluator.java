@@ -1,4 +1,4 @@
-package org.mybatis.scripting.velocity;
+package org.mybatis.scripting.doma;
 
 import org.seasar.doma.expr.ExpressionFunctions;
 import org.seasar.doma.internal.expr.EvaluationResult;

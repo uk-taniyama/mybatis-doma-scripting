@@ -1,4 +1,4 @@
-package org.mybatis.scripting.velocity;
+package org.mybatis.scripting.doma;
 
 import java.util.Objects;
 import java.util.function.Function;

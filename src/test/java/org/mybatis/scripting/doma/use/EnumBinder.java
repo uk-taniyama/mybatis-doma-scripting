@@ -13,22 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.scripting.velocity.use;
+package org.mybatis.scripting.doma.use;
 
-public class TrailingWildCardFormatter {
+public class EnumBinder {
 
-  public String formatLiteral(Object val) {
-    if (val == null) {
-      return "''";
-    }
-    String param = val.toString().replaceAll("\'", "\''");
-    return "'" + param + "%'";
-  }
-
-  public String format(Object val) {
-    if (val == null) {
-      return "";
-    }
-    return val + "%";
+  public EnumWrapper bind(String className) throws ClassNotFoundException {
+    return new EnumWrapper(Class.forName(className));
   }
 }

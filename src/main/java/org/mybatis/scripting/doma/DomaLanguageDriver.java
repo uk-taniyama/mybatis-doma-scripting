@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.scripting.velocity;
+package org.mybatis.scripting.doma;
 
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.mapping.BoundSql;
@@ -32,11 +32,11 @@ import org.apache.ibatis.session.Configuration;
  * @since 2.1.0
  * @author Kazuki Shimizu
  */
-public class VelocityLanguageDriver implements LanguageDriver {
+public class DomaLanguageDriver implements LanguageDriver {
 
   /** Default constructor. */
-  public VelocityLanguageDriver() {
-    this(VelocityLanguageDriverConfig.newInstance());
+  public DomaLanguageDriver() {
+    this(DomaLanguageDriverConfig.newInstance());
   }
 
   /**
@@ -44,8 +44,8 @@ public class VelocityLanguageDriver implements LanguageDriver {
    *
    * @param driverConfig a language driver configuration
    */
-  public VelocityLanguageDriver(VelocityLanguageDriverConfig driverConfig) {
-    VelocityFacade.initialize(driverConfig);
+  public DomaLanguageDriver(DomaLanguageDriverConfig driverConfig) {
+    DomaFacade.initialize(driverConfig);
   }
 
   /** {@inheritDoc} */

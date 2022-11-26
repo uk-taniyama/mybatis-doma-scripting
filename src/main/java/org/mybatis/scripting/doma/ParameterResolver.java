@@ -1,4 +1,4 @@
-package org.mybatis.scripting.velocity;
+package org.mybatis.scripting.doma;
 
 import java.util.function.Function;
 import org.apache.ibatis.reflection.MetaObject;

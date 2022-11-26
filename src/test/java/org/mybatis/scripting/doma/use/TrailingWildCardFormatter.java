@@ -13,10 +13,22 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.scripting.velocity;
+package org.mybatis.scripting.doma.use;
 
-/**
- * @deprecated Since 2.1.0, recommend to use the {@link VelocityLanguageDriver}.
- */
-@Deprecated
-public class Driver extends VelocityLanguageDriver {}
+public class TrailingWildCardFormatter {
+
+  public String formatLiteral(Object val) {
+    if (val == null) {
+      return "''";
+    }
+    String param = val.toString().replaceAll("\'", "\''");
+    return "'" + param + "%'";
+  }
+
+  public String format(Object val) {
+    if (val == null) {
+      return "";
+    }
+    return val + "%";
+  }
+}

@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.scripting.velocity;
+package org.mybatis.scripting.doma;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,12 +28,12 @@ import org.apache.ibatis.scripting.ScriptingException;
 import org.apache.ibatis.session.Configuration;
 import org.seasar.doma.jdbc.PreparedSql;
 
-public class VelocityFacade {
+public class DomaFacade {
 
   private static final Map<String, Object> additionalCtxAttributes = new HashMap<>();
-  private static final Log log = LogFactory.getLog(VelocityFacade.class);
+  private static final Log log = LogFactory.getLog(DomaFacade.class);
 
-  private VelocityFacade() {
+  private DomaFacade() {
     // Prevent instantiation
   }
 
@@ -43,7 +43,7 @@ public class VelocityFacade {
    * @param driverConfig a language driver configuration
    * @since 2.1.0
    */
-  public static void initialize(VelocityLanguageDriverConfig driverConfig) {
+  public static void initialize(DomaLanguageDriverConfig driverConfig) {
     Properties properties = new Properties();
     driverConfig.getVelocitySettings().forEach(properties::setProperty);
     additionalCtxAttributes.putAll(

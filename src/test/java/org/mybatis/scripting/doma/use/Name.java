@@ -13,22 +13,41 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.scripting.velocity.use;
+package org.mybatis.scripting.doma.use;
 
-import java.util.HashMap;
+public class Name {
 
-public class EnumWrapper extends HashMap<String, Integer> {
+  private int id;
+  private String firstName;
+  private String lastName;
 
-  private static final long serialVersionUID = 1L;
+  public Name() {}
 
-  public EnumWrapper(Class<?> e) {
-    if (e.isEnum()) {
-      Object[] consts = e.getEnumConstants();
-      for (int i = 0; i < consts.length; i++) {
-        put(consts[i].toString(), i);
-      }
-    } else {
-      throw new IllegalArgumentException("Supplied argument is not an enum class");
-    }
+  public Name(int value) {
+    this.id = value;
+  }
+
+  public String getFirstName() {
+    return this.firstName;
+  }
+
+  public void setFirstName(String value) {
+    this.firstName = value;
+  }
+
+  public String getLastName() {
+    return this.lastName;
+  }
+
+  public void setLastName(String value) {
+    this.lastName = value;
+  }
+
+  public int getId() {
+    return this.id;
+  }
+
+  public void setId(int value) {
+    this.id = value;
   }
 }
