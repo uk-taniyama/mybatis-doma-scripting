@@ -22,7 +22,7 @@
 
 <mapper namespace="org.mybatis.scripting.velocity.use">
 
-  <sql id="columns">firstName #if($_parameter.includeLastName), lastName#end</sql>
+  <sql id="columns">firstName /*%if includeLastName */, lastName /*%end*/</sql>
 
   <sql id="nested">
     'SOME NOISE', <include refid="columns"/>
@@ -31,14 +31,13 @@
   <select id="selectNames" resultType="org.mybatis.scripting.velocity.use.Name">
     SELECT <include refid="nested" />
     FROM names
-    WHERE lastName LIKE @{name}
+    WHERE lastName LIKE /* name */'name'
   </select>
 
   <select id="selectNamesWithExpressions" resultType="org.mybatis.scripting.velocity.use.Name">
-    #set( $pattern = $_parameter.name + "%" )
     SELECT <include refid="columns" />
     FROM names
-    WHERE lastName LIKE @{pattern, javaType=string}
+    WHERE lastName LIKE /* name + "%"*/'name%'
   </select>
 
   <select id="selectNamesWithFormattedParam" resultType="org.mybatis.scripting.velocity.use.Name">
@@ -57,11 +56,8 @@
   <select id="selectNamesWithIteration" resultType="org.mybatis.scripting.velocity.use.Name">
     SELECT *
     FROM names
-    #where()
-      #repeat($_parameter.ids $id ',' 'id IN (' ')')
-        @{id}
-      #end
-    #end
+    where
+      id IN /* ids */(1,2,3)
   </select>
 
   <select id="selectWithTrim" resultType="org.mybatis.scripting.velocity.use.Name">
