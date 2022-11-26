@@ -26,7 +26,7 @@ import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.scripting.ScriptingException;
 import org.apache.ibatis.session.Configuration;
-import org.seasar.doma.template.SqlStatement;
+import org.seasar.doma.jdbc.PreparedSql;
 
 public class VelocityFacade {
 
@@ -87,9 +87,9 @@ public class VelocityFacade {
     log.warn("getBoundSql:Source:" + script);
     DomaSqlTemplate sqlTemplate = new DomaSqlTemplate(script);
     VariableValues variableValues = new VariableValues(configuration, parameterObject);
-    SqlStatement sqlStatement = sqlTemplate.execute(variableValues);
-    String sql = sqlStatement.getFormattedSql();
-    log.warn("getBoundSql:Result:" + sqlStatement.getFormattedSql());
+    PreparedSql preparedSql = sqlTemplate.execute(variableValues);
+    String sql = preparedSql.getFormattedSql();
+    log.warn("getBoundSql:Result:" + preparedSql.getRawSql());
     // log.warn("getBoundSql:Result:" + sqlStatement.getArguments().forEach(null););
     BoundSql boundSql =
         new BoundSql(configuration, sql, pmc.getParameterMappings(), parameterObject);

@@ -1,9 +1,7 @@
 package org.mybatis.scripting.velocity;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.seasar.doma.internal.expr.ExpressionEvaluator;
 import org.seasar.doma.internal.jdbc.sql.NodePreparedSqlBuilder;
@@ -15,9 +13,6 @@ import org.seasar.doma.jdbc.SqlLogType;
 import org.seasar.doma.jdbc.SqlNode;
 import org.seasar.doma.jdbc.dialect.Dialect;
 import org.seasar.doma.jdbc.dialect.StandardDialect;
-import org.seasar.doma.template.SqlArgument;
-import org.seasar.doma.template.SqlStatement;
-import org.seasar.doma.wrapper.Wrapper;
 
 /** Represents a SQL template. */
 public class DomaSqlTemplate {
@@ -67,12 +62,11 @@ public class DomaSqlTemplate {
    *
    * @return a SQL statement. Must not be null.
    */
-  public SqlStatement execute(DomaVariableValues values) {
+  public PreparedSql execute(DomaVariableValues values) {
     SqlParser parser = new SqlParser(sql);
     SqlNode node = parser.parse();
     NodePreparedSqlBuilder builder = createNodePreparedSqlBuilder(values);
-    PreparedSql preparedSql = builder.build(node, Function.identity());
-    return toSqlStatement(preparedSql);
+    return builder.build(node, Function.identity());
   }
 
   private NodePreparedSqlBuilder createNodePreparedSqlBuilder(DomaVariableValues values) {
@@ -81,17 +75,5 @@ public class DomaSqlTemplate {
             values, config.getDialect().getExpressionFunctions(), config.getClassHelper());
     return new NodePreparedSqlBuilder(
         config, SqlKind.SCRIPT, null, evaluator, SqlLogType.FORMATTED);
-  }
-
-  private SqlStatement toSqlStatement(PreparedSql preparedSql) {
-    List<SqlArgument> arguments =
-        preparedSql.getParameters().stream()
-            .map(
-                it -> {
-                  Wrapper<?> w = it.getWrapper();
-                  return new SqlArgument(w.getBasicClass(), w.get());
-                })
-            .collect(Collectors.toList());
-    return new SqlStatement(preparedSql.getRawSql(), preparedSql.getFormattedSql(), arguments);
   }
 }
