@@ -1,14 +1,11 @@
 package org.mybatis.scripting.velocity;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.sql.DataSource;
 import org.seasar.doma.internal.expr.ExpressionEvaluator;
-import org.seasar.doma.internal.expr.Value;
 import org.seasar.doma.internal.jdbc.sql.NodePreparedSqlBuilder;
 import org.seasar.doma.internal.jdbc.sql.SqlParser;
 import org.seasar.doma.jdbc.Config;

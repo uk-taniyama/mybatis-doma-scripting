@@ -11,22 +11,25 @@ import org.seasar.doma.jdbc.ClassHelper;
 import org.seasar.doma.message.Message;
 
 public class DomaExpressionEvaluator extends ExpressionEvaluator {
-    final DomaVariableValues variableValues;
+  final DomaVariableValues variableValues;
 
-    public DomaExpressionEvaluator(DomaVariableValues variableValues, ExpressionFunctions expressionFunctions, ClassHelper classHelper) {
-        super(expressionFunctions, classHelper);
-        this.variableValues = variableValues;
+  public DomaExpressionEvaluator(
+      DomaVariableValues variableValues,
+      ExpressionFunctions expressionFunctions,
+      ClassHelper classHelper) {
+    super(expressionFunctions, classHelper);
+    this.variableValues = variableValues;
+  }
+
+  @Override
+  public EvaluationResult visitVariableNode(VariableNode node, Void p) {
+    String variableName = node.getExpression();
+    Value value = variableValues.getValue(node.getExpression());
+    if (value == null) {
+      ExpressionLocation location = node.getLocation();
+      throw new ExpressionException(
+          Message.DOMA3003, location.getExpression(), location.getPosition(), variableName);
     }
-
-    @Override
-    public EvaluationResult visitVariableNode(VariableNode node, Void p) {
-      String variableName = node.getExpression();
-      Value value = variableValues.getValue(node.getExpression());
-      if (value == null) {
-        ExpressionLocation location = node.getLocation();
-        throw new ExpressionException(
-            Message.DOMA3003, location.getExpression(), location.getPosition(), variableName);
-      }
-      return new EvaluationResult(value.getValue(), value.getType());
-    }  
+    return new EvaluationResult(value.getValue(), value.getType());
+  }
 }

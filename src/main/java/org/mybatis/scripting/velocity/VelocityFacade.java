@@ -21,9 +21,10 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.scripting.ScriptingException;
+import org.apache.ibatis.session.Configuration;
 import org.seasar.doma.template.SqlStatement;
-import org.seasar.doma.template.SqlTemplate;
 
 public class VelocityFacade {
 
@@ -74,14 +75,31 @@ public class VelocityFacade {
     }
   }
 
-  public static String apply(Object template, Map<String, Object> context) {
+  public static BoundSql getBoundSql(
+      Configuration configuration,
+      ParameterMappingCollector pmc,
+      Object template,
+      Object parameterObject) {
     String script = (String) template;
-    SqlTemplate sqlTemplate = new SqlTemplate(script);
-    context.forEach(
-        (name, value) -> {
-          sqlTemplate.add(name, value.getClass(), value);
-        });
-    SqlStatement sqlStatement = sqlTemplate.execute();
-    return sqlStatement.getFormattedSql();
+    DomaSqlTemplate sqlTemplate = new DomaSqlTemplate(script);
+    // BeanWrapper wrapper = new BeanWrapper(parameterObject);
+    // ParameterHandler parameterHandler = new DefaultParameterHandler();
+    // context.forEach(
+    //     (name, value) -> {
+    //       if(value!=null) {
+    //         System.out.println(name +":" + value);
+    //         sqlTemplate.add(name, value.getClass(), value);
+    //       }
+    //     });
+    SqlStatement sqlStatement =
+        sqlTemplate.execute(
+            name -> {
+              System.out.println(name);
+              return null;
+            });
+    String sql = sqlStatement.getFormattedSql();
+    BoundSql boundSql =
+        new BoundSql(configuration, sql, pmc.getParameterMappings(), parameterObject);
+    return boundSql;
   }
 }

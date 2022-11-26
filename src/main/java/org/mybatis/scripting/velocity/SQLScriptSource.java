@@ -52,18 +52,19 @@ public class SQLScriptSource implements SqlSource {
     final ParameterMappingCollector pmc =
         new ParameterMappingCollector(this.parameterMappingSources, context, this.configuration);
 
-    context.put(DATABASE_ID_KEY, this.configuration.getDatabaseId());
-    context.put(PARAMETER_OBJECT_KEY, parameterObject);
-    context.put(MAPPING_COLLECTOR_KEY, pmc);
-    context.put(VARIABLES_KEY, this.configuration.getVariables());
+    // context.put(DATABASE_ID_KEY, this.configuration.getDatabaseId());
+    // context.put(PARAMETER_OBJECT_KEY, parameterObject);
+    // context.put(MAPPING_COLLECTOR_KEY, pmc);
+    // context.put(VARIABLES_KEY, this.configuration.getVariables());
 
-    final String sql = VelocityFacade.apply(this.compiledScript, context);
-    BoundSql boundSql =
-        new BoundSql(this.configuration, sql, pmc.getParameterMappings(), parameterObject);
-    for (Map.Entry<String, Object> entry : context.entrySet()) {
-      boundSql.setAdditionalParameter(entry.getKey(), entry.getValue());
-    }
+    return VelocityFacade.getBoundSql(
+        this.configuration, pmc, this.compiledScript, parameterObject);
+    // BoundSql boundSql =
+    //     new BoundSql(this.configuration, sql, pmc.getParameterMappings(), parameterObject);
+    // for (Map.Entry<String, Object> entry : context.entrySet()) {
+    //   boundSql.setAdditionalParameter(entry.getKey(), entry.getValue());
+    // }
 
-    return boundSql;
+    // return boundSql;
   }
 }
