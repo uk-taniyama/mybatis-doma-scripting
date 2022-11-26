@@ -2,6 +2,7 @@ package org.mybatis.scripting.doma;
 
 import java.util.function.Function;
 import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.ReflectionException;
 import org.apache.ibatis.session.Configuration;
 
 @FunctionalInterface
@@ -30,10 +31,14 @@ public interface ParameterResolver extends Function<String, Object> {
 
     @Override
     public Object apply(String key) {
-      if (fallbackParameterObject && !parameterMetaObject.hasGetter(key)) {
-        return parameterMetaObject.getOriginalObject();
-      } else {
-        return parameterMetaObject.getValue(key);
+      try {
+        if (fallbackParameterObject && !parameterMetaObject.hasGetter(key)) {
+          return parameterMetaObject.getOriginalObject();
+        } else {
+          return parameterMetaObject.getValue(key);
+        }
+      } catch(ReflectionException e){
+        return null;
       }
     }
   }

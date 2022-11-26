@@ -16,6 +16,9 @@ public class VariableValues implements DomaVariableValues {
     if (obj == null) {
       return null;
     }
+    if (obj instanceof Value) {
+      return (Value) obj;
+    }
     return new Value(obj.getClass(), obj);
   }
 }
