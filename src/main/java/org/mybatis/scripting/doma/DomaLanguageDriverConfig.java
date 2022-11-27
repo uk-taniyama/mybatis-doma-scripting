@@ -63,44 +63,11 @@ public class DomaLanguageDriverConfig {
    * <th colspan="3">Directive configuration</th>
    * </tr>
    * <tr>
-   * <td>userdirective</td>
-   * <td>The user defined directives (Recommend to use the
-   * 'doma-settings.runtime.custom_directives' property
-   * because this property defined for keeping backward compatibility)</td>
-   * <td>None(empty)</td>
+   * <td>dialect</td>
+   * <td>org.seasar.doma.jdbc.dialect.Dialect.</td>
+   * <td>None(StandardDialect)</td>
    * </tr>
    * <tr>
-   * <th colspan="3">Additional context attribute configuration</th>
-   * </tr>
-   * <tr>
-   * <td>additional.context.attributes</td>
-   * <td>The user defined additional context attribute values(Recommend to use the
-   * 'additional-context-attributes.{name}' because this property defined for
-   * keeping backward compatibility)</td>
-   * <td>None(empty)</td>
-   * </tr>
-   * <tr>
-   * <td>additional-context-attributes.{name}</td>
-   * <td>The user defined additional context attributes value(FQCN)</td>
-   * <td>-</td>
-   * </tr>
-   * <tr>
-   * <th colspan="3">Velocity settings configuration</th>
-   * </tr>
-   * <tr>
-   * <td>doma-settings.{name}</td>
-   * <td>The settings of Velocity's
-   * {@link RuntimeInstance#setProperty(String, Object)}</td>
-   * <td>-</td>
-   * </tr>
-   * <tr>
-   * <td>{name}</td>
-   * <td>The settings of Velocity's
-   * {@link RuntimeInstance#setProperty(String, Object)} (Recommend to use the
-   * 'doma-settings.{name}' because this property defined for keeping backward
-   * compatibility)</td>
-   * <td>-</td>
-   * </tr>
    * </table>
    *
    * @return a configuration instance
