@@ -33,3 +33,15 @@ spotless {
 }
 
 compileJava.dependsOn 'spotlessJavaApply'
+
+tasks.named('test') {
+  useJUnitPlatform()
+  testLogging {
+    events "PASSED", "SKIPPED", "FAILED"
+    exceptionFormat 'full'
+    debug {
+      events "STARTED", "PASSED", "SKIPPED", "FAILED"
+      showStandardStreams = true
+    }
+  }
+}
