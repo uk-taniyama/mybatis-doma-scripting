@@ -16,13 +16,15 @@
 package org.mybatis.scripting.doma;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
-
+import org.apache.ibatis.builder.BuilderException;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.session.Configuration;
+import org.seasar.doma.internal.util.ResourceUtil;
 import org.seasar.doma.jdbc.PreparedSql;
 import org.seasar.doma.jdbc.dialect.Dialect;
 import org.seasar.doma.jdbc.dialect.StandardDialect;
@@ -42,10 +44,25 @@ public class DomaSqlSource implements SqlSource {
       String script,
       Class<?> parameterTypeClass) {
     this.driverConfig = driverConfig;
-    this.dialect = Optional.ofNullable(this.driverConfig.dialect).orElseGet(() -> new StandardDialect());
-    this.script = script;
+    this.dialect =
+        Optional.ofNullable(this.driverConfig.dialect).orElseGet(() -> new StandardDialect());
+    this.script = getScript(script);
     this.configuration = newConfiguration;
     this.parameterTypeClass = parameterTypeClass;
+  }
+
+  public static String getScript(String script) {
+    if (!script.startsWith("//")) {
+      return script;
+    }
+
+    try {
+      String text = ResourceUtil.getResourceAsString(script.substring(2));
+      Objects.requireNonNull(text);
+      return text;
+    } catch (Exception e) {
+      throw new BuilderException("Error parsing doma script '" + script + "'", e);
+    }
   }
 
   @Override
