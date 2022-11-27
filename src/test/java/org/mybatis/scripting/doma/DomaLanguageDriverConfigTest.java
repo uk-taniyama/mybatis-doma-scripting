@@ -28,7 +28,6 @@ import org.seasar.doma.jdbc.dialect.MssqlDialect;
 class DomaLanguageDriverConfigTest {
 
   private String currentConfigFile;
-  private String currentConfigEncoding;
 
   @BeforeEach
   void saveCurrentConfig() {
@@ -93,65 +92,4 @@ class DomaLanguageDriverConfigTest {
     config = DomaLanguageDriverConfig.newInstance(properties);
     Assertions.assertEquals(MssqlDialect.class, config.dialect.getClass());
   }
-
-  // @Test
-  // void newInstanceWithConsumer() {
-  // DomaLanguageDriverConfig config =
-  // DomaLanguageDriverConfig.newInstance(
-  // c -> c.getVelocitySettings().put("resource.default_encoding",
-  // "Windows-31J"));
-  // Assertions.assertEquals(2, config.getVelocitySettings().size());
-  // System.out.println(config.getVelocitySettings());
-  // // Assertions.assertEquals("class",
-  // config.getVelocitySettings().get("resource.loaders"));
-  // // Assertions.assertEquals(
-  // // "org.apache.doma.runtime.resource.loader.ClasspathResourceLoader",
-  // // config.getVelocitySettings().get("resource.loader.class.class"));
-  // Assertions.assertEquals(
-  // "Windows-31J",
-  // config.getVelocitySettings().get("resource.default_encoding"));
-  // }
-
-  // // @Test
-  // void invalidAdditionalContextAttributeValue() {
-  // {
-  // Properties properties = new Properties();
-  // properties.setProperty("additional.context.attributes", "");
-  // try {
-  // DomaLanguageDriverConfig.newInstance(properties);
-  // Assertions.fail();
-  // } catch (ScriptingException e) {
-  // Assertions.assertEquals(
-  // "Invalid additional context property '' on 'additional.context.attributes'.
-  // Must be specify by 'key:value' format.",
-  // e.getMessage());
-  // }
-  // }
-  // {
-  // Properties properties = new Properties();
-  // properties.setProperty("additional.context.attributes", "key");
-  // try {
-  // DomaLanguageDriverConfig.newInstance(properties);
-  // Assertions.fail();
-  // } catch (ScriptingException e) {
-  // Assertions.assertEquals(
-  // "Invalid additional context property 'key' on
-  // 'additional.context.attributes'. Must be specify by 'key:value' format.",
-  // e.getMessage());
-  // }
-  // }
-  // {
-  // Properties properties = new Properties();
-  // properties.setProperty("additional.context.attributes", "key:value:note");
-  // try {
-  // DomaLanguageDriverConfig.newInstance(properties);
-  // Assertions.fail();
-  // } catch (ScriptingException e) {
-  // Assertions.assertEquals(
-  // "Invalid additional context property 'key:value:note' on
-  // 'additional.context.attributes'. Must be specify by 'key:value' format.",
-  // e.getMessage());
-  // }
-  // }
-  // }
 }

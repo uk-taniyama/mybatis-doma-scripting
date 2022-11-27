@@ -18,12 +18,13 @@ dependencies {
 
 group = 'org.mybatis.scripting'
 version = '2.1.2-SNAPSHOT'
-description = 'MyBatis Velocity'
+description = 'MyBatis Doma'
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 spotless {
   java {
     googleJavaFormat()
+    licenseHeaderFile rootProject.file('config/license.txt')
   }
   groovyGradle {
     target '*.gradle', '*/*.gradle'

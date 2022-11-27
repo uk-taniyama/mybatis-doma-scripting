@@ -24,15 +24,9 @@ import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.Configuration;
 
-/**
- * The {@link LanguageDriver} using Velocity.
- *
- * <p>This class rename from {@code Driver}.
- *
- * @since 2.1.0
- * @author Kazuki Shimizu
- */
+/** The {@link LanguageDriver} using Doma */
 public class DomaLanguageDriver implements LanguageDriver {
+  private final DomaLanguageDriverConfig driverConfig;
 
   /** Default constructor. */
   public DomaLanguageDriver() {
@@ -45,7 +39,7 @@ public class DomaLanguageDriver implements LanguageDriver {
    * @param driverConfig a language driver configuration
    */
   public DomaLanguageDriver(DomaLanguageDriverConfig driverConfig) {
-    DomaFacade.initialize(driverConfig);
+    this.driverConfig = driverConfig;
   }
 
   /** {@inheritDoc} */
@@ -59,17 +53,17 @@ public class DomaLanguageDriver implements LanguageDriver {
   @Override
   public SqlSource createSqlSource(
       Configuration configuration, XNode script, Class<?> parameterTypeClass) {
-    return new SQLScriptSource(
-        configuration,
-        script.getNode().getTextContent(),
-        parameterTypeClass == null ? Object.class : parameterTypeClass);
+    return createSqlSource(configuration, script.getNode().getTextContent(), parameterTypeClass);
   }
 
   /** {@inheritDoc} */
   @Override
   public SqlSource createSqlSource(
       Configuration configuration, String script, Class<?> parameterTypeClass) {
-    return new SQLScriptSource(
-        configuration, script, parameterTypeClass == null ? Object.class : parameterTypeClass);
+    return new DomaSqlSource(
+        driverConfig,
+        configuration,
+        script,
+        parameterTypeClass == null ? Object.class : parameterTypeClass);
   }
 }

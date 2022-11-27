@@ -29,10 +29,8 @@ import org.apache.ibatis.jdbc.ScriptRunner;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mybatis.scripting.doma.DomaFacade;
 
 /** Just a test case. Not a real Doma implementation. */
 class DomaLanguageTest {
@@ -74,11 +72,6 @@ class DomaLanguageTest {
         conn.close();
       }
     }
-  }
-
-  @AfterAll
-  static void cleanup() {
-    DomaFacade.destroy();
   }
 
   @Test
